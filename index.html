@@ -53,12 +53,12 @@
             </button>
         </div>
         <nav class="flex space-x-reverse space-x-6 overflow-x-auto pb-2 text-slate-100 dark:text-slate-300" id="main-nav">
-            <button onclick="switchTab('intro')" class="nav-btn nav-active pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">מבוא ומושגים</button>
+            <button onclick="switchTab('intro')" class="nav-btn nav-active pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">מבוא</button>
             <button onclick="switchTab('first-order')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">סדר ראשון</button>
             <button onclick="switchTab('higher-order')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">סדר עליון</button>
             <button onclick="switchTab('fields')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">שדות כיוון ותפירה</button>
-            <button onclick="switchTab('systems')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">מערכות ופאזה</button>
             <button onclick="switchTab('series')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">טורים והתכנסות</button>
+            <button onclick="switchTab('systems')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">מערכות ופאזה</button>
             <button onclick="switchTab('sturm')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">שטורם-ליוביל</button>
             <button onclick="switchTab('ai-assistant')" class="nav-btn pb-2 px-1 hover:text-emerald-300 dark:hover:text-emerald-400 transition-colors whitespace-nowrap flex items-center gap-1 text-emerald-100 dark:text-emerald-300 font-semibold">עוזר AI ✨</button>
         </nav>
@@ -414,52 +414,6 @@
         </div>
     </section>
 
-    <!-- Systems Tab -->
-    <section id="systems" class="section-content">
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-2">מערכות משוואות ותמונות פאזה</h2>
-            <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
-                נושא זה חוקר מערכות $X' = AX$. סיווג תמונות הפאזה ויציבותן נקבע על ידי הערכים העצמיים של המטריצה $A$.
-            </p>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">סיווג נקודת שיווי משקל (0,0)</h3>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full text-sm text-right">
-                        <thead class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
-                            <tr>
-                                <th class="px-4 py-2 border-b dark:border-slate-600">ערכים עצמיים</th>
-                                <th class="px-4 py-2 border-b dark:border-slate-600">סוג הנקודה (Phase)</th>
-                                <th class="px-4 py-2 border-b dark:border-slate-600">יציבות</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-200 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
-                            <tr><td class="px-4 py-2" dir="ltr">$\lambda_1 > \lambda_2 > 0$</td><td class="px-4 py-2 font-bold">צומת (Node)</td><td class="px-4 py-2 text-red-600 dark:text-red-400">לא יציב</td></tr>
-                            <tr><td class="px-4 py-2" dir="ltr">$\lambda_1 < \lambda_2 < 0$</td><td class="px-4 py-2 font-bold">צומת (Node)</td><td class="px-4 py-2 text-emerald-600 dark:text-emerald-400">יציב אסימפטוטית</td></tr>
-                            <tr class="bg-slate-50 dark:bg-slate-800/50"><td class="px-4 py-2" dir="ltr">$\lambda_1 < 0 < \lambda_2$</td><td class="px-4 py-2 font-bold">אוכף (Saddle)</td><td class="px-4 py-2 text-red-600 dark:text-red-400 font-bold">תמיד לא יציב!</td></tr>
-                            <tr><td class="px-4 py-2" dir="ltr">$\alpha \pm i\beta, \alpha > 0$</td><td class="px-4 py-2 font-bold">ספירלה (Spiral)</td><td class="px-4 py-2 text-red-600 dark:text-red-400">לא יציבה</td></tr>
-                            <tr><td class="px-4 py-2" dir="ltr">$\alpha \pm i\beta, \alpha < 0$</td><td class="px-4 py-2 font-bold">ספירלה (Spiral)</td><td class="px-4 py-2 text-emerald-600 dark:text-emerald-400">יציבה אסימפטוטית</td></tr>
-                            <tr class="bg-blue-50 dark:bg-slate-800/50"><td class="px-4 py-2" dir="ltr">$\pm i\beta (\alpha=0)$</td><td class="px-4 py-2 font-bold">מרכז (Center)</td><td class="px-4 py-2 text-blue-600 dark:text-blue-400">יציב</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors flex flex-col items-center">
-                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-2 w-full">תרשים פאזה דינמי (המחשה)</h3>
-                <select id="phaseType" onchange="updatePhaseChart()" class="w-full mb-4 rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 shadow-sm p-2 border text-slate-800 dark:text-slate-100">
-                    <option value="spiral-in">ספירלה יציבה אסימפטוטית</option>
-                    <option value="center">מרכז יציב (ע״ע מדומים טהורים)</option>
-                    <option value="spiral-out">ספירלה לא יציבה</option>
-                    <option value="saddle">אוכף</option>
-                </select>
-                <div class="chart-container rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 shadow-inner w-full flex justify-center items-center p-2">
-                    <canvas id="phaseChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Series Tab (Updated with M-test and Taylor Series Operations) -->
     <section id="series" class="section-content">
          <div class="mb-6">
@@ -627,6 +581,52 @@
         </div>
     </section>
 
+    <!-- Systems Tab -->
+    <section id="systems" class="section-content">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-2">מערכות משוואות ותמונות פאזה</h2>
+            <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
+                נושא זה חוקר מערכות $X' = AX$. סיווג תמונות הפאזה ויציבותן נקבע על ידי הערכים העצמיים של המטריצה $A$.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">סיווג נקודת שיווי משקל (0,0)</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-right">
+                        <thead class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+                            <tr>
+                                <th class="px-4 py-2 border-b dark:border-slate-600">ערכים עצמיים</th>
+                                <th class="px-4 py-2 border-b dark:border-slate-600">סוג הנקודה (Phase)</th>
+                                <th class="px-4 py-2 border-b dark:border-slate-600">יציבות</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-700 text-slate-700 dark:text-slate-300">
+                            <tr><td class="px-4 py-2" dir="ltr">$\lambda_1 > \lambda_2 > 0$</td><td class="px-4 py-2 font-bold">צומת (Node)</td><td class="px-4 py-2 text-red-600 dark:text-red-400">לא יציב</td></tr>
+                            <tr><td class="px-4 py-2" dir="ltr">$\lambda_1 < \lambda_2 < 0$</td><td class="px-4 py-2 font-bold">צומת (Node)</td><td class="px-4 py-2 text-emerald-600 dark:text-emerald-400">יציב אסימפטוטית</td></tr>
+                            <tr class="bg-slate-50 dark:bg-slate-800/50"><td class="px-4 py-2" dir="ltr">$\lambda_1 < 0 < \lambda_2$</td><td class="px-4 py-2 font-bold">אוכף (Saddle)</td><td class="px-4 py-2 text-red-600 dark:text-red-400 font-bold">תמיד לא יציב!</td></tr>
+                            <tr><td class="px-4 py-2" dir="ltr">$\alpha \pm i\beta, \alpha > 0$</td><td class="px-4 py-2 font-bold">ספירלה (Spiral)</td><td class="px-4 py-2 text-red-600 dark:text-red-400">לא יציבה</td></tr>
+                            <tr><td class="px-4 py-2" dir="ltr">$\alpha \pm i\beta, \alpha < 0$</td><td class="px-4 py-2 font-bold">ספירלה (Spiral)</td><td class="px-4 py-2 text-emerald-600 dark:text-emerald-400">יציבה אסימפטוטית</td></tr>
+                            <tr class="bg-blue-50 dark:bg-slate-800/50"><td class="px-4 py-2" dir="ltr">$\pm i\beta (\alpha=0)$</td><td class="px-4 py-2 font-bold">מרכז (Center)</td><td class="px-4 py-2 text-blue-600 dark:text-blue-400">יציב</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors flex flex-col items-center">
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-2 w-full">תרשים פאזה דינמי (המחשה)</h3>
+                <select id="phaseType" onchange="updatePhaseChart()" class="w-full mb-4 rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 shadow-sm p-2 border text-slate-800 dark:text-slate-100">
+                    <option value="spiral-in">ספירלה יציבה אסימפטוטית</option>
+                    <option value="center">מרכז יציב (ע״ע מדומים טהורים)</option>
+                    <option value="spiral-out">ספירלה לא יציבה</option>
+                    <option value="saddle">אוכף</option>
+                </select>
+                <div class="chart-container rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-900 shadow-inner w-full flex justify-center items-center p-2">
+                    <canvas id="phaseChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Sturm Liouville Tab -->
     <section id="sturm" class="section-content">
         <div class="mb-6">
@@ -774,7 +774,7 @@
             <p class="text-xs mt-4 font-bold text-blue-300 dark:text-blue-500 opacity-90">נוצר ע״י רון גלוחובסקי</p>
         </div>
         <div>
-            <a href="mailto:your_email@example.com?subject=הצעות לשיפור מדריך המד״ר&body=היי רון, יש לי כמה רעיונות לשיפור האתר:" class="inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 text-white py-2 px-4 rounded transition-colors text-sm border border-slate-600 dark:border-slate-700">
+            <a href="mailto:ron.g@campus.technion.ac.il?subject=הצעות לשיפור מדריך המד״ר&body=היי רון, יש לי כמה רעיונות לשיפור האתר:" class="inline-flex items-center gap-2 bg-slate-700 hover:bg-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 text-white py-2 px-4 rounded transition-colors text-sm border border-slate-600 dark:border-slate-700">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                 שלח הצעות לשיפור
             </a>
@@ -1100,9 +1100,15 @@
 
     // --- Gemini API Setup ---
     const apiKey = ""; // Set API Key here
-    async function callGeminiAPI(userPrompt, systemPrompt) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
         const payload = { contents: [{ parts: [{ text: userPrompt }] }], systemInstruction: { parts: [{ text: systemPrompt }] } };
+        
+        // Force strict JSON output if requested
+        if (isJson) {
+            payload.generationConfig = { responseMimeType: "application/json" };
+        }
+
         let retries = 5; let delays = [1000, 2000, 4000, 8000, 16000];
         for (let i = 0; i < retries; i++) {
             try {
@@ -1128,7 +1134,7 @@
         זהה את המשוואה, הסבר את הסד"פ, וספק צעד ראשון לפתרון, ללא הפתרון המלא. 
         כתוב בעברית ברורה ועטוף נוסחאות ב-$.`;
         
-        const responseText = await callGeminiAPI(`נתח: ${inputEl.value.trim()}`, sysPrompt);
+        const responseText = await callGeminiAPI(`נתח: ${inputEl.value.trim()}`, sysPrompt, false);
         document.getElementById('aiLoading1').classList.add('hidden');
         document.getElementById('aiAnalysisContent').innerHTML = responseText;
         if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiAnalysisContent')]);
@@ -1145,7 +1151,7 @@
         const sysPrompt = `אתה מרצה הקורס 104136. צור שאלת תיאוריה אחת מתוך: שדות כיוון, יציבות, ורונסקיאן, התכנסות במידה שווה, תפירת פתרונות, טורים או שטורם-ליוביל. 
         החזר בפורמט JSON: {"question": "השאלה", "answer": "התשובה וההסבר התיאורטי"}`;
         
-        const rawResponse = await callGeminiAPI("צור שאלת תיאוריה", sysPrompt);
+        const rawResponse = await callGeminiAPI("צור שאלת תיאוריה", sysPrompt, true);
         document.getElementById('aiLoading2').classList.add('hidden');
 
         try {
@@ -1155,7 +1161,7 @@
             currentQuizAnswer = quizData.answer;
             document.getElementById('showAnswerBtn').classList.remove('hidden');
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizQuestion')]);
-        } catch(e) { document.getElementById('aiQuizQuestion').innerHTML = "אירעה שגיאה. נסה שנית."; }
+        } catch(e) { document.getElementById('aiQuizQuestion').innerHTML = "אירעה שגיאה בבניית השאלה. אנא נסה שנית."; }
     }
 
     function toggleAnswer() {
@@ -1177,7 +1183,7 @@
         const sysPrompt = `אתה מרצה בקורס מד"ר 104136 בטכניון. צור שאלת "נכון / לא נכון" תיאורטית ומאתגרת בנושא שטורם-ליוביל בלבד (אורתוגונליות, מנת ריילי, התנודה של שטורם, ריבוי פשוט של ערכים עצמיים, מציאת ע"ע ופ"ע).
         החזר בפורמט JSON: {"question": "טענה: [הטענה שלך כאן]", "answer": "נכון / לא נכון. [הסבר תיאורטי מפורט]"}`;
         
-        const rawResponse = await callGeminiAPI("צור שאלת נכון לא נכון שטורם ליוביל", sysPrompt);
+        const rawResponse = await callGeminiAPI("צור שאלת נכון לא נכון שטורם ליוביל", sysPrompt, true);
         document.getElementById('sturmLoading').classList.add('hidden');
 
         try {
@@ -1187,7 +1193,7 @@
             currentSturmAnswer = quizData.answer;
             document.getElementById('showSturmAnswerBtn').classList.remove('hidden');
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizQuestion')]);
-        } catch(e) { document.getElementById('sturmQuizQuestion').innerHTML = "אירעה שגיאה. נסה שנית."; }
+        } catch(e) { document.getElementById('sturmQuizQuestion').innerHTML = "אירעה שגיאה בבניית השאלה. אנא נסה שנית."; }
     }
 
     function toggleSturmAnswer() {
