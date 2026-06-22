@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -6,7 +7,6 @@
     <title>המד״רון - מדריך המד״ר הגדול 104136</title>
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind config for Dark Mode (MUST be after the CDN script) -->
     <script>
         tailwind.config = {
             darkMode: 'class'
@@ -24,7 +24,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;800&display=swap');
         body { font-family: 'Heebo', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
         
-        /* Fixed Nav Active Color */
         .nav-active { border-bottom: 3px solid #bfdbfe; color: #ffffff !important; font-weight: bold; }
         .dark .nav-active { border-bottom: 3px solid #60a5fa; color: #60a5fa !important; }
         
@@ -32,7 +31,6 @@
         .section-content.active { display: block; animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Fixed Chart Resolution Bugs */
         .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 350px; }
         .slope-canvas-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; }
         #slopeFieldCanvas { border-radius: 0.5rem; width: 100%; height: auto; cursor: crosshair; transition: border-color 0.3s ease; }
@@ -67,8 +65,9 @@
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-300">
 
+    <!-- Intro Tab with API Key Configuration -->
     <section id="intro" class="section-content active">
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-8 border border-slate-200 dark:border-slate-700 transition-colors duration-300">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-8 border border-slate-200 dark:border-slate-700 transition-colors duration-300 mb-8">
             <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-4">ברוכים הבאים למדריך המקיף</h2>
             <p class="text-lg leading-relaxed mb-6 text-slate-700 dark:text-slate-300">
                 פרק זה נועד להכניס אתכם לראש של כותבי המבחנים במשוואות דיפרנציאליות רגילות. המטרה של המדריך הזה היא לא רק להזכיר לכם את הנוסחאות, אלא לבנות עבורכם תבניות חשיבה (סד״פים) מסודרות. כאשר תראו משוואה במבחן, לא תצטרכו לנחש מה לעשות, אלא פשוט להריץ אלגוריתם זיהוי בראש.
@@ -81,6 +80,33 @@
                     <li>היעזרו ב<strong>עוזר ה-AI</strong> בסוף כדי לקבל הכוונה על שאלות מבחן שנתקעתם עליהן.</li>
                 </ul>
             </div>
+        </div>
+
+        <!-- API Key Configuration Box -->
+        <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl shadow-sm p-8 border border-emerald-200 dark:border-emerald-800/50 transition-colors duration-300">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl">🤖</span>
+                <h3 class="text-2xl font-bold text-emerald-800 dark:text-emerald-400">הפעלת עוזר ה-AI ומחולל השאלות</h3>
+            </div>
+            <p class="text-md leading-relaxed mb-4 text-emerald-900 dark:text-emerald-200">
+                כדי להשתמש בפיצ'רים המתקדמים של האתר (פיענוח משוואות, יצירת שאלות נכון/לא-נכון וכו'), יש להזין מפתח API חינמי של Google Gemini. המפתח נשמר <strong>אך ורק בדפדפן שלך</strong> ואינו מועבר לשום גורם צד שלישי.
+            </p>
+            
+            <div class="bg-white dark:bg-slate-800 p-5 rounded-lg border border-emerald-100 dark:border-slate-600 mb-6">
+                <h4 class="font-bold text-slate-800 dark:text-slate-100 mb-2">איך מוציאים מפתח? (לוקח דקה)</h4>
+                <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                    <li>כנסו לאתר <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 dark:text-blue-400 underline font-semibold hover:text-blue-800 dark:hover:text-blue-300">Google AI Studio</a> והתחברו עם חשבון ה-Gmail שלכם.</li>
+                    <li>לחצו על הכפתור הכחול <strong>"Create API key"</strong>.</li>
+                    <li>בחרו ב-"Create API key in a new project".</li>
+                    <li>העתיקו את רצף האותיות והמספרים שקיבלתם והדביקו כאן למטה:</li>
+                </ol>
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-3 items-center">
+                <input type="password" id="userApiKey" placeholder="הדבק את ה-API Key כאן..." class="w-full md:w-2/3 rounded-md border-emerald-300 dark:border-emerald-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-white shadow-sm p-3 border focus:ring-2 focus:ring-emerald-500 focus:outline-none font-mono" dir="ltr">
+                <button onclick="saveApiKey()" class="w-full md:w-1/3 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded shadow transition-colors">שמור והפעל AI ✨</button>
+            </div>
+            <p id="apiKeyStatus" class="mt-3 text-sm font-semibold hidden"></p>
         </div>
     </section>
 
@@ -320,7 +346,7 @@
                 </label>
             </div>
             <button onclick="generateGuess()" class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold py-3 px-4 rounded shadow transition-colors">ייצר תבנית ניחוש</button>
-            <div id="guessResultContainer" class="mt-6 hidden bg-white dark:bg-slate-900 p-4 rounded border border-blue-200 dark:border-slate-700">
+            <div id="guessResultContainer" class="mt-6 hidden bg-white dark:bg-slate-900 p-4 rounded border border-blue-200 dark:border-slate-600">
                 <p class="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">תבנית הניחוש הנדרשת $y_p(x)$:</p>
                 <div id="guessOutput" class="text-center overflow-x-auto p-4 bg-slate-50 dark:bg-slate-800 rounded text-lg text-slate-800 dark:text-slate-100"></div>
                 <p class="mt-4 text-sm text-slate-600 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700 pt-2" id="guessExplanation"></p>
@@ -414,7 +440,7 @@
         </div>
     </section>
 
-    <!-- Series Tab (Updated with M-test and Taylor Series Operations) -->
+    <!-- Series Tab -->
     <section id="series" class="section-content">
          <div class="mb-6">
             <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-2">טורי חזקות, התכנסות ופיתוח פונקציות</h2>
@@ -430,43 +456,43 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-600 text-center flex flex-col justify-between">
                     <span class="font-bold text-slate-800 dark:text-slate-200 block mb-2 text-lg">$e^x$</span>
-                    <span class="text-base text-slate-700 dark:text-slate-300">$\sum_{n=0}^{\infty} \frac{x^n}{n!}$</span>
+                    <span class="text-base text-slate-700 dark:text-slate-300" dir="ltr">$\sum_{n=0}^{\infty} \frac{x^n}{n!}$</span>
                     <span class="block mt-3 text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-900/20 py-1 rounded">רדיוס התכנסות: $R = \infty$</span>
                 </div>
                 
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-600 text-center flex flex-col justify-between border-t-4 border-t-amber-400">
                     <span class="font-bold text-slate-800 dark:text-slate-200 block mb-2 text-lg">$\frac{1}{1-x}$ <span class="text-sm font-normal text-slate-500">(הטור ההנדסי)</span></span>
-                    <span class="text-base text-slate-700 dark:text-slate-300">$\sum_{n=0}^{\infty} x^n$</span>
+                    <span class="text-base text-slate-700 dark:text-slate-300" dir="ltr">$\sum_{n=0}^{\infty} x^n$</span>
                     <span class="block mt-3 text-xs text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-900/20 py-1 rounded">רדיוס התכנסות: $R = 1$</span>
                 </div>
 
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-600 text-center flex flex-col justify-between border-t-4 border-t-amber-400">
                     <span class="font-bold text-slate-800 dark:text-slate-200 block mb-2 text-lg">$\frac{1}{1+x}$</span>
-                    <span class="text-base text-slate-700 dark:text-slate-300">$\sum_{n=0}^{\infty} (-1)^n x^n$</span>
+                    <span class="text-base text-slate-700 dark:text-slate-300" dir="ltr">$\sum_{n=0}^{\infty} (-1)^n x^n$</span>
                     <span class="block mt-3 text-xs text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-900/20 py-1 rounded">רדיוס התכנסות: $R = 1$</span>
                 </div>
                 
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-600 text-center flex flex-col justify-between">
                     <span class="font-bold text-slate-800 dark:text-slate-200 block mb-2 text-lg">$\sin(x)$</span>
-                    <span class="text-base text-slate-700 dark:text-slate-300">$\sum_{n=0}^{\infty} \frac{(-1)^n x^{2n+1}}{(2n+1)!}$</span>
+                    <span class="text-base text-slate-700 dark:text-slate-300" dir="ltr">$\sum_{n=0}^{\infty} \frac{(-1)^n x^{2n+1}}{(2n+1)!}$</span>
                     <span class="block mt-3 text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-900/20 py-1 rounded">רדיוס התכנסות: $R = \infty$</span>
                 </div>
                 
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-600 text-center flex flex-col justify-between">
                     <span class="font-bold text-slate-800 dark:text-slate-200 block mb-2 text-lg">$\cos(x)$</span>
-                    <span class="text-base text-slate-700 dark:text-slate-300">$\sum_{n=0}^{\infty} \frac{(-1)^n x^{2n}}{(2n)!}$</span>
+                    <span class="text-base text-slate-700 dark:text-slate-300" dir="ltr">$\sum_{n=0}^{\infty} \frac{(-1)^n x^{2n}}{(2n)!}$</span>
                     <span class="block mt-3 text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-900/20 py-1 rounded">רדיוס התכנסות: $R = \infty$</span>
                 </div>
                 
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-600 text-center flex flex-col justify-between border-t-4 border-t-amber-400">
                     <span class="font-bold text-slate-800 dark:text-slate-200 block mb-2 text-lg">$\ln(1+x)$</span>
-                    <span class="text-base text-slate-700 dark:text-slate-300">$\sum_{n=1}^{\infty} \frac{(-1)^{n-1} x^n}{n}$</span>
+                    <span class="text-base text-slate-700 dark:text-slate-300" dir="ltr">$\sum_{n=1}^{\infty} \frac{(-1)^{n-1} x^n}{n}$</span>
                     <span class="block mt-3 text-xs text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-900/20 py-1 rounded">רדיוס התכנסות: $R = 1$</span>
                 </div>
 
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-600 text-center flex flex-col justify-between border-t-4 border-t-amber-400">
                     <span class="font-bold text-slate-800 dark:text-slate-200 block mb-2 text-lg">$\arctan(x)$</span>
-                    <span class="text-base text-slate-700 dark:text-slate-300">$\sum_{n=0}^{\infty} \frac{(-1)^n x^{2n+1}}{2n+1}$</span>
+                    <span class="text-base text-slate-700 dark:text-slate-300" dir="ltr">$\sum_{n=0}^{\infty} \frac{(-1)^n x^{2n+1}}{2n+1}$</span>
                     <span class="block mt-3 text-xs text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-900/20 py-1 rounded">רדיוס התכנסות: $R = 1$</span>
                 </div>
             </div>
@@ -694,7 +720,7 @@
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded border border-slate-200 dark:border-slate-700">
                     <h4 class="font-bold text-amber-600 dark:text-amber-400 mb-2">מקרה 2: $\lambda = 0$</h4>
-                    <p class="text-sm text-slate-700 dark:text-slate-300">המשוואה הופכת ל-$y'' = 0$. הפתרון הכללי הוא קו ישר: $y = C_1 x + C_2$. מציבים תנאי שפה. לעיתים נקבל $y \equiv 0$, ולעיתים (למשל כאשר תנאי השפה כוללים רק נגזרות) נקבל פתרון שהוא קבוע, ואז $0$ הוא אכן ערך עצמי.</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">המשוואה הופכת ל-$y'' = 0$. הפתרון הכללי הוא קו ישר: $y = C_1 x + C_2$. מציבים תנאי השפה. לעיתים נקבל $y \equiv 0$, ולעיתים (למשל כאשר תנאי השפה כוללים רק נגזרות) נקבל פתרון שהוא קבוע, ואז $0$ הוא אכן ערך עצמי.</p>
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded border border-slate-200 dark:border-slate-700">
                     <h4 class="font-bold text-emerald-600 dark:text-emerald-400 mb-2">מקרה 3: $\lambda > 0$ (נסמן $\lambda = k^2$ כאשר $k>0$)</h4>
@@ -734,7 +760,7 @@
          <div class="mb-6">
             <h2 class="text-2xl font-bold text-emerald-700 dark:text-emerald-400 mb-2">עוזר אישי לזיהוי משוואות </h2>
             <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
-                נתקעתם על שאלה ממבחן ולא בטוחים מאיפה להתחיל? העוזר החכם שלנו ינתח את המשוואה ויכוון אתכם.
+                נתקעתם על שאלה ממבחן ולא בטוחים מאיפה להתחיל? העוזר החכם שלנו ינתח את המשוואה ויכוון אתכם. (נדרש להזין מפתח במסך ה"מבוא").
             </p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -789,7 +815,6 @@
         const isDark = document.documentElement.classList.contains('dark');
         document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
         
-        // Force complete redraw of canvas components with correct colors
         if (window.phaseChartInstance) {
             updatePhaseChart();
         }
@@ -803,7 +828,13 @@
         document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('nav-active'));
-        event.currentTarget.classList.add('nav-active');
+        
+        const allButtons = document.querySelectorAll('.nav-btn');
+        allButtons.forEach(btn => {
+            if(btn.getAttribute('onclick').includes(`'${tabId}'`)) {
+                btn.classList.add('nav-active');
+            }
+        });
         
         if(tabId === 'systems') {
             if(!window.phaseChartInstance) setTimeout(initPhaseChart, 100);
@@ -812,6 +843,38 @@
             setTimeout(initSlopeField, 100);
         }
     }
+
+    // --- API Key Management (Local Storage) ---
+    function getStoredApiKey() {
+        return localStorage.getItem('geminiApiKey');
+    }
+
+    function saveApiKey() {
+        const keyInput = document.getElementById('userApiKey').value.trim();
+        const statusEl = document.getElementById('apiKeyStatus');
+        
+        if (!keyInput) {
+            statusEl.innerText = "אנא הזן מפתח חוקי.";
+            statusEl.className = "mt-3 text-sm font-semibold text-red-600 dark:text-red-400";
+            statusEl.classList.remove('hidden');
+            return;
+        }
+        
+        localStorage.setItem('geminiApiKey', keyInput);
+        statusEl.innerText = "המפתח נשמר בהצלחה בדפדפן! כעת ניתן להשתמש בעוזר ה-AI.";
+        statusEl.className = "mt-3 text-sm font-semibold text-emerald-600 dark:text-emerald-400";
+        statusEl.classList.remove('hidden');
+        document.getElementById('userApiKey').value = '';
+    }
+
+    // Initialize UI based on stored key
+    document.addEventListener("DOMContentLoaded", () => {
+        if (getStoredApiKey()) {
+            document.getElementById('apiKeyStatus').innerText = "מפתח AI קיים ושמור במערכת.";
+            document.getElementById('apiKeyStatus').className = "mt-3 text-sm font-semibold text-emerald-600 dark:text-emerald-400";
+            document.getElementById('apiKeyStatus').classList.remove('hidden');
+        }
+    });
 
     // --- Higher Order: Undetermined Coefficients Builder ---
     function generateGuess() {
@@ -900,56 +963,36 @@
         });
     }
 
-    // --- Slope Field & Euler Integration Simulator ---
+    // --- Slope Field Simulator ---
     let sfCanvas, sfCtx;
     const sfWidth = 600; const sfHeight = 400;
     const mathMinX = -5, mathMaxX = 5, mathMinY = -5, mathMaxY = 5;
     let currentTrajectories = [];
 
     function mathToPx(mx, my) {
-        return {
-            x: ((mx - mathMinX) / (mathMaxX - mathMinX)) * sfWidth,
-            y: sfHeight - ((my - mathMinY) / (mathMaxY - mathMinY)) * sfHeight
-        };
+        return { x: ((mx - mathMinX) / (mathMaxX - mathMinX)) * sfWidth, y: sfHeight - ((my - mathMinY) / (mathMaxY - mathMinY)) * sfHeight };
     }
     function pxToMath(px, py) {
-        return {
-            x: mathMinX + (px / sfWidth) * (mathMaxX - mathMinX),
-            y: mathMinY + ((sfHeight - py) / sfHeight) * (mathMaxY - mathMinY)
-        };
+        return { x: mathMinX + (px / sfWidth) * (mathMaxX - mathMinX), y: mathMinY + ((sfHeight - py) / sfHeight) * (mathMaxY - mathMinY) };
     }
 
     function toggleCustomEq() {
         const selectVal = document.getElementById('slopeEquation').value;
         const customContainer = document.getElementById('customEqContainer');
-        if (selectVal === 'custom') {
-            customContainer.classList.remove('hidden');
-        } else {
-            customContainer.classList.add('hidden');
-        }
+        if (selectVal === 'custom') { customContainer.classList.remove('hidden'); } else { customContainer.classList.add('hidden'); }
         initSlopeField();
-    }
-
-    function getCustomDerivative(x, y) {
-        let rawEq = document.getElementById('customEqInput').value;
-        if (!rawEq || !rawEq.trim()) return 0;
-        
-        rawEq = rawEq.replace(/sin/g, 'Math.sin').replace(/cos/g, 'Math.cos')
-                     .replace(/tan/g, 'Math.tan').replace(/exp/g, 'Math.exp')
-                     .replace(/log/g, 'Math.log').replace(/sqrt/g, 'Math.sqrt')
-                     .replace(/abs/g, 'Math.abs').replace(/pi/gi, 'Math.PI')
-                     .replace(/e\b/g, 'Math.E'); 
-        try {
-            const func = new Function("x", "y", "return " + rawEq + ";");
-            const res = func(x, y);
-            if(isNaN(res) || !isFinite(res)) return 0;
-            return res;
-        } catch(e) { return 0; }
     }
 
     function evalDerivative(equationStr, x, y) {
         try {
-            if(equationStr === 'custom') return getCustomDerivative(x, y);
+            if(equationStr === 'custom') {
+                let rawEq = document.getElementById('customEqInput').value;
+                if (!rawEq || !rawEq.trim()) return 0;
+                rawEq = rawEq.replace(/sin/g, 'Math.sin').replace(/cos/g, 'Math.cos').replace(/exp/g, 'Math.exp'); 
+                const func = new Function("x", "y", "return " + rawEq + ";");
+                const res = func(x, y);
+                return (isNaN(res) || !isFinite(res)) ? 0 : res;
+            }
             if(equationStr === 'y-x') return y - x;
             if(equationStr === 'y*(1-y)') return y * (1 - y);
             if(equationStr === 'Math.sin(x)*Math.cos(y)') return Math.sin(x) * Math.cos(y);
@@ -962,206 +1005,145 @@
         sfCanvas = document.getElementById('slopeFieldCanvas');
         if(!sfCanvas) return;
         sfCtx = sfCanvas.getContext('2d');
-        
         if(!sfCanvas.hasClickListener) {
             sfCanvas.addEventListener('mousedown', function(e) {
                 const rect = sfCanvas.getBoundingClientRect();
-                const scaleX = sfCanvas.width / rect.width;
-                const scaleY = sfCanvas.height / rect.height;
-                const px = (e.clientX - rect.left) * scaleX;
-                const py = (e.clientY - rect.top) * scaleY;
-                
+                const px = (e.clientX - rect.left) * (sfCanvas.width / rect.width);
+                const py = (e.clientY - rect.top) * (sfCanvas.height / rect.height);
                 const mathPt = pxToMath(px, py);
                 calculateTrajectory(mathPt.x, mathPt.y);
                 drawSlopeField();
             });
             sfCanvas.hasClickListener = true;
         }
-        
-        currentTrajectories = []; 
-        drawSlopeField();
+        currentTrajectories = []; drawSlopeField();
     }
 
-    function clearTrajectories() {
-        currentTrajectories = [];
-        drawSlopeField();
-    }
+    function clearTrajectories() { currentTrajectories = []; drawSlopeField(); }
 
     function drawSlopeField() {
         if(!sfCtx) return;
-        
-        // Dynamic explicit colors for light/dark mode inside canvas (NO CSS filters)
         const isDark = document.documentElement.classList.contains('dark');
         const bgColor = isDark ? '#0f172a' : '#ffffff';
         const gridColor = isDark ? '#1e293b' : '#f1f5f9';
         const axisColor = isDark ? '#334155' : '#cbd5e1';
         const vecColor = isDark ? '#64748b' : '#94a3b8';
 
-        // Background
         sfCtx.clearRect(0, 0, sfWidth, sfHeight);
-        sfCtx.fillStyle = bgColor;
-        sfCtx.fillRect(0, 0, sfWidth, sfHeight);
+        sfCtx.fillStyle = bgColor; sfCtx.fillRect(0, 0, sfWidth, sfHeight);
         
-        // Grid
-        sfCtx.strokeStyle = gridColor;
-        sfCtx.lineWidth = 1;
-        sfCtx.beginPath();
+        sfCtx.strokeStyle = gridColor; sfCtx.lineWidth = 1; sfCtx.beginPath();
         for(let x = mathMinX; x <= mathMaxX; x++) { let p = mathToPx(x, 0); sfCtx.moveTo(p.x, 0); sfCtx.lineTo(p.x, sfHeight); }
         for(let y = mathMinY; y <= mathMaxY; y++) { let p = mathToPx(0, y); sfCtx.moveTo(0, p.y); sfCtx.lineTo(sfWidth, p.y); }
         sfCtx.stroke();
 
-        // Axes
-        sfCtx.strokeStyle = axisColor;
-        sfCtx.lineWidth = 2;
-        let origin = mathToPx(0, 0);
-        sfCtx.beginPath();
-        sfCtx.moveTo(origin.x, 0); sfCtx.lineTo(origin.x, sfHeight); 
-        sfCtx.moveTo(0, origin.y); sfCtx.lineTo(sfWidth, origin.y); 
-        sfCtx.stroke();
+        sfCtx.strokeStyle = axisColor; sfCtx.lineWidth = 2; let origin = mathToPx(0, 0); sfCtx.beginPath();
+        sfCtx.moveTo(origin.x, 0); sfCtx.lineTo(origin.x, sfHeight); sfCtx.moveTo(0, origin.y); sfCtx.lineTo(sfWidth, origin.y); sfCtx.stroke();
 
         const eq = document.getElementById('slopeEquation').value;
-        const stepsX = 20; const stepsY = 15;
-        const dx = (mathMaxX - mathMinX) / stepsX;
-        const dy = (mathMaxY - mathMinY) / stepsY;
-        const segmentLength = 10; 
-
-        // Vectors
-        sfCtx.lineWidth = 1.5;
-        sfCtx.strokeStyle = vecColor; 
+        const dx = (mathMaxX - mathMinX) / 20; const dy = (mathMaxY - mathMinY) / 15;
+        sfCtx.lineWidth = 1.5; sfCtx.strokeStyle = vecColor; 
         for (let mx = mathMinX + dx/2; mx <= mathMaxX; mx += dx) {
             for (let my = mathMinY + dy/2; my <= mathMaxY; my += dy) {
                 const slope = evalDerivative(eq, mx, my);
                 const angle = Math.atan(slope);
                 const ptPx = mathToPx(mx, my);
-                
-                const dxPx = Math.cos(angle) * (segmentLength / 2);
-                const dyPx = Math.sin(angle) * (segmentLength / 2);
-
-                sfCtx.beginPath();
-                sfCtx.moveTo(ptPx.x - dxPx, ptPx.y + dyPx); 
-                sfCtx.lineTo(ptPx.x + dxPx, ptPx.y - dyPx);
-                sfCtx.stroke();
+                const dxPx = Math.cos(angle) * 5; const dyPx = Math.sin(angle) * 5;
+                sfCtx.beginPath(); sfCtx.moveTo(ptPx.x - dxPx, ptPx.y + dyPx); sfCtx.lineTo(ptPx.x + dxPx, ptPx.y - dyPx); sfCtx.stroke();
             }
         }
 
-        // Trajectories
         currentTrajectories.forEach(traj => {
-            sfCtx.beginPath();
-            sfCtx.strokeStyle = traj.color;
-            sfCtx.lineWidth = 2;
+            sfCtx.beginPath(); sfCtx.strokeStyle = traj.color; sfCtx.lineWidth = 2;
             for(let i=0; i<traj.points.length; i++) {
                 const p = mathToPx(traj.points[i].x, traj.points[i].y);
-                if(i===0) sfCtx.moveTo(p.x, p.y);
-                else sfCtx.lineTo(p.x, p.y);
+                if(i===0) sfCtx.moveTo(p.x, p.y); else sfCtx.lineTo(p.x, p.y);
             }
             sfCtx.stroke();
-            
             const startP = mathToPx(traj.startX, traj.startY);
-            sfCtx.beginPath();
-            sfCtx.arc(startP.x, startP.y, 4, 0, 2*Math.PI);
-            sfCtx.fillStyle = traj.color;
-            sfCtx.fill();
+            sfCtx.beginPath(); sfCtx.arc(startP.x, startP.y, 4, 0, 2*Math.PI); sfCtx.fillStyle = traj.color; sfCtx.fill();
         });
     }
 
     function calculateTrajectory(startX, startY) {
         const eq = document.getElementById('slopeEquation').value;
-        const points = [];
-        const h = 0.05; 
-        const colors = ['#e11d48', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
+        const h = 0.05; const colors = ['#e11d48', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
         const myColor = colors[currentTrajectories.length % colors.length];
         
-        let x = startX, y = startY;
-        let forwardPts = [{x, y}];
+        let x = startX, y = startY; let forwardPts = [{x, y}];
         for(let i=0; i<500; i++) {
-            let dy = evalDerivative(eq, x, y);
-            if(Math.abs(dy) > 100) break;
-            x += h; y += dy * h;
-            if (x > mathMaxX+1 || y > mathMaxY+1 || y < mathMinY-1) break;
+            let dy = evalDerivative(eq, x, y); if(Math.abs(dy) > 100) break;
+            x += h; y += dy * h; if (x > mathMaxX+1 || y > mathMaxY+1 || y < mathMinY-1) break;
             forwardPts.push({x, y});
         }
-
-        x = startX; y = startY;
-        let backwardPts = [];
+        x = startX; y = startY; let backwardPts = [];
         for(let i=0; i<500; i++) {
-            let dy = evalDerivative(eq, x, y);
-            if(Math.abs(dy) > 100) break;
-            x -= h; y -= dy * h;
-            if (x < mathMinX-1 || y > mathMaxY+1 || y < mathMinY-1) break;
+            let dy = evalDerivative(eq, x, y); if(Math.abs(dy) > 100) break;
+            x -= h; y -= dy * h; if (x < mathMinX-1 || y > mathMaxY+1 || y < mathMinY-1) break;
             backwardPts.unshift({x, y});
         }
-
-        currentTrajectories.push({
-            startX: startX, startY: startY,
-            points: backwardPts.concat(forwardPts),
-            color: myColor
-        });
+        currentTrajectories.push({ startX: startX, startY: startY, points: backwardPts.concat(forwardPts), color: myColor });
     }
 
-    // --- Gemini API Setup ---
-    const apiKey = ""; // Set API Key here
+    // --- Gemini API (Local Storage Powered) ---
     async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-        const payload = { contents: [{ parts: [{ text: userPrompt }] }], systemInstruction: { parts: [{ text: systemPrompt }] } };
-        
-        // Force strict JSON output if requested
-        if (isJson) {
-            payload.generationConfig = { responseMimeType: "application/json" };
+        const apiKey = getStoredApiKey();
+        if (!apiKey) {
+            alert("חובה להזין מפתח API בלשונית ה'מבוא' כדי להשתמש בעוזר החכם.");
+            throw new Error("Missing API Key");
         }
 
-        let retries = 5; let delays = [1000, 2000, 4000, 8000, 16000];
-        for (let i = 0; i < retries; i++) {
-            try {
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                return data.candidates?.[0]?.content?.parts?.[0]?.text || "לא התקבל טקסט מהשרת.";
-            } catch (error) {
-                if (i === retries - 1) return "שגיאה בתקשורת עם ה-API.";
-                await new Promise(res => setTimeout(res, delays[i]));
-            }
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        const payload = { contents: [{ parts: [{ text: userPrompt }] }], systemInstruction: { parts: [{ text: systemPrompt }] } };
+        if (isJson) { payload.generationConfig = { responseMimeType: "application/json" }; }
+
+        const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (!response.ok) {
+            if(response.status === 400) { alert("מפתח ה-API שהוזן אינו תקין. אנא בדוק אותו שוב בלשונית המבוא."); }
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        const data = await response.json();
+        return data.candidates?.[0]?.content?.parts?.[0]?.text;
     }
 
     async function analyzeEquation() {
+        if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא'."); return; }
         const inputEl = document.getElementById('aiEqInput');
         if(!inputEl.value.trim()) return;
         document.getElementById('aiAnalysisResult').classList.remove('hidden');
         document.getElementById('aiLoading1').classList.remove('hidden');
         document.getElementById('aiAnalysisContent').innerHTML = '';
 
-        const sysPrompt = `אתה מתרגל מומחה בקורס מד"ר 104136 בטכניון. 
-        זהה את המשוואה, הסבר את הסד"פ, וספק צעד ראשון לפתרון, ללא הפתרון המלא. 
-        כתוב בעברית ברורה ועטוף נוסחאות ב-$.`;
+        const sysPrompt = `אתה מתרגל מומחה בקורס מד"ר 104136 בטכניון. זהה את המשוואה, הסבר את הסד"פ, וספק צעד ראשון לפתרון, ללא הפתרון המלא. כתוב בעברית ברורה ועטוף נוסחאות ב-$.`;
         
-        const responseText = await callGeminiAPI(`נתח: ${inputEl.value.trim()}`, sysPrompt, false);
-        document.getElementById('aiLoading1').classList.add('hidden');
-        document.getElementById('aiAnalysisContent').innerHTML = responseText;
-        if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiAnalysisContent')]);
+        try {
+            const responseText = await callGeminiAPI(`נתח: ${inputEl.value.trim()}`, sysPrompt, false);
+            document.getElementById('aiLoading1').classList.add('hidden');
+            document.getElementById('aiAnalysisContent').innerHTML = responseText;
+            if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiAnalysisContent')]);
+        } catch(e) { document.getElementById('aiLoading1').classList.add('hidden'); }
     }
 
     let currentQuizAnswer = "";
     async function generateQuiz() {
+        if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא'."); return; }
         document.getElementById('aiQuizResult').classList.remove('hidden');
         document.getElementById('aiLoading2').classList.remove('hidden');
         document.getElementById('aiQuizQuestion').innerHTML = '';
         document.getElementById('aiQuizAnswer').classList.add('hidden');
         document.getElementById('showAnswerBtn').classList.add('hidden');
 
-        const sysPrompt = `אתה מרצה הקורס 104136. צור שאלת תיאוריה אחת מתוך: שדות כיוון, יציבות, ורונסקיאן, התכנסות במידה שווה, תפירת פתרונות, טורים או שטורם-ליוביל. 
-        החזר בפורמט JSON: {"question": "השאלה", "answer": "התשובה וההסבר התיאורטי"}`;
+        const sysPrompt = `אתה מרצה הקורס 104136. צור שאלת תיאוריה אחת מתוך: שדות כיוון, יציבות, ורונסקיאן, התכנסות במידה שווה, תפירת פתרונות, טורים או שטורם-ליוביל. החזר בפורמט JSON: {"question": "השאלה", "answer": "התשובה וההסבר התיאורטי"}`;
         
-        const rawResponse = await callGeminiAPI("צור שאלת תיאוריה", sysPrompt, true);
-        document.getElementById('aiLoading2').classList.add('hidden');
-
         try {
-            let cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
-            const quizData = JSON.parse(cleanJson);
+            const rawResponse = await callGeminiAPI("צור שאלת תיאוריה", sysPrompt, true);
+            document.getElementById('aiLoading2').classList.add('hidden');
+            const quizData = JSON.parse(rawResponse);
             document.getElementById('aiQuizQuestion').innerHTML = quizData.question;
             currentQuizAnswer = quizData.answer;
             document.getElementById('showAnswerBtn').classList.remove('hidden');
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizQuestion')]);
-        } catch(e) { document.getElementById('aiQuizQuestion').innerHTML = "אירעה שגיאה בבניית השאלה. אנא נסה שנית."; }
+        } catch(e) { document.getElementById('aiLoading2').classList.add('hidden'); }
     }
 
     function toggleAnswer() {
@@ -1171,29 +1153,27 @@
         if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizAnswer')]);
     }
 
-    // --- Sturm-Liouville T/F Quiz ---
+    // --- Sturm-Liouville Quiz ---
     let currentSturmAnswer = "";
     async function generateSturmQuiz() {
+        if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא'."); return; }
         document.getElementById('sturmQuizResult').classList.remove('hidden');
         document.getElementById('sturmLoading').classList.remove('hidden');
         document.getElementById('sturmQuizQuestion').innerHTML = '';
         document.getElementById('sturmQuizAnswer').classList.add('hidden');
         document.getElementById('showSturmAnswerBtn').classList.add('hidden');
 
-        const sysPrompt = `אתה מרצה בקורס מד"ר 104136 בטכניון. צור שאלת "נכון / לא נכון" תיאורטית ומאתגרת בנושא שטורם-ליוביל בלבד (אורתוגונליות, מנת ריילי, התנודה של שטורם, ריבוי פשוט של ערכים עצמיים, מציאת ע"ע ופ"ע).
-        החזר בפורמט JSON: {"question": "טענה: [הטענה שלך כאן]", "answer": "נכון / לא נכון. [הסבר תיאורטי מפורט]"}`;
+        const sysPrompt = `אתה מרצה בקורס מד"ר 104136 בטכניון. צור שאלת "נכון / לא נכון" תיאורטית ומאתגרת בנושא שטורם-ליוביל בלבד. החזר בפורמט JSON: {"question": "טענה: [הטענה שלך כאן]", "answer": "נכון / לא נכון. [הסבר תיאורטי מפורט]"}`;
         
-        const rawResponse = await callGeminiAPI("צור שאלת נכון לא נכון שטורם ליוביל", sysPrompt, true);
-        document.getElementById('sturmLoading').classList.add('hidden');
-
         try {
-            let cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
-            const quizData = JSON.parse(cleanJson);
+            const rawResponse = await callGeminiAPI("צור שאלת נכון לא נכון שטורם ליוביל", sysPrompt, true);
+            document.getElementById('sturmLoading').classList.add('hidden');
+            const quizData = JSON.parse(rawResponse);
             document.getElementById('sturmQuizQuestion').innerHTML = quizData.question;
             currentSturmAnswer = quizData.answer;
             document.getElementById('showSturmAnswerBtn').classList.remove('hidden');
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizQuestion')]);
-        } catch(e) { document.getElementById('sturmQuizQuestion').innerHTML = "אירעה שגיאה בבניית השאלה. אנא נסה שנית."; }
+        } catch(e) { document.getElementById('sturmLoading').classList.add('hidden'); }
     }
 
     function toggleSturmAnswer() {
@@ -1205,3 +1185,6 @@
 </script>
 </body>
 </html>
+
+
+```
