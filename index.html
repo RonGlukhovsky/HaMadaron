@@ -51,7 +51,7 @@
             </button>
         </div>
         <nav class="flex space-x-reverse space-x-6 overflow-x-auto pb-2 text-slate-100 dark:text-slate-300" id="main-nav">
-            <button onclick="switchTab('intro')" class="nav-btn nav-active pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">מבוא</button>
+            <button onclick="switchTab('intro')" class="nav-btn nav-active pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">מבוא ומושגים</button>
             <button onclick="switchTab('first-order')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">סדר ראשון</button>
             <button onclick="switchTab('higher-order')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">סדר עליון</button>
             <button onclick="switchTab('fields')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">שדות כיוון ותפירה</button>
@@ -112,7 +112,6 @@
             </div>
         </div>
 
-        <!-- API Key Box -->
         <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl shadow-sm p-8 border border-emerald-200 dark:border-emerald-800/50 transition-colors duration-300">
             <div class="flex items-center gap-3 mb-4">
                 <span class="text-3xl">🤖</span>
@@ -747,7 +746,7 @@
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded border border-slate-200 dark:border-slate-700">
                     <h4 class="font-bold text-amber-600 dark:text-amber-400 mb-2">מקרה 2: $\lambda = 0$</h4>
-                    <p class="text-sm text-slate-700 dark:text-slate-300">המשוואה הופכת ל-$y'' = 0$. הפתרון הכללי הוא קו ישר: $y = C_1 x + C_2$. מציבים תנאי שפה. לעיתים נקבל $y \equiv 0$, ולעיתים (למשל כאשר תנאי השפה כוללים רק נגזרות) נקבל פתרון שהוא קבוע, ואז $0$ הוא אכן ערך עצמי.</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300">המשוואה הופכת ל-$y'' = 0$. הפתרון הכללי הוא קו ישר: $y = C_1 x + C_2$. מציבים תנאי השפה. לעיתים נקבל $y \equiv 0$, ולעיתים (למשל כאשר תנאי השפה כוללים רק נגזרות) נקבל פתרון שהוא קבוע, ואז $0$ הוא אכן ערך עצמי.</p>
                 </div>
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded border border-slate-200 dark:border-slate-700">
                     <h4 class="font-bold text-emerald-600 dark:text-emerald-400 mb-2">מקרה 3: $\lambda > 0$ (נסמן $\lambda = k^2$ כאשר $k>0$)</h4>
@@ -1112,7 +1111,7 @@
         currentTrajectories.push({ startX: startX, startY: startY, points: backwardPts.concat(forwardPts), color: myColor });
     }
 
-    // --- Gemini API Setup ---
+    // --- Gemini API Setup (No Proxy, Clear Errors) ---
     async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
         const apiKey = getStoredApiKey()?.trim();
         if (!apiKey) {
@@ -1130,37 +1129,36 @@
             payload.generationConfig = { responseMimeType: "application/json" };
         }
 
-        let retries = 3; let delays = [1000, 2000, 4000];
-        for (let i = 0; i < retries; i++) {
-            try {
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                const data = await response.json();
+        try {
+            const response = await fetch(url, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(payload) 
+            });
+            const data = await response.json();
+            
+            if (!response.ok) {
+                let errorMsg = data.error?.message || "שגיאה לא ידועה משרתי גוגל";
                 
-                // מנגנון חכם לעקיפת חסימת המיקום (ישראל) דרך שרת פרוקסי אנונימי
-                if (!response.ok && data.error?.message?.toLowerCase().includes("location")) {
-                    console.log("חסימת מיקום זוהתה! מנתב את הבקשה דרך שרת פרוקסי אמריקאי...");
-                    const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(url);
-                    const proxyResponse = await fetch(proxyUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                    const proxyData = await proxyResponse.json();
-                    if (proxyResponse.ok) return proxyData.candidates?.[0]?.content?.parts?.[0]?.text;
-                    
-                    alert("הודעת שגיאה מגוגל (דרך הפרוקסי): " + (proxyData.error?.message || proxyResponse.status));
-                    throw new Error(`HTTP error! status: ${proxyResponse.status}`);
+                if (response.status === 400 && errorMsg.includes("API key not valid")) {
+                    alert("שגיאה 400: המפתח שהוזן אינו תקין. אנא ודא שהעתקת אותו במלואו מה-AI Studio.");
+                } else if (response.status === 403 || errorMsg.toLowerCase().includes("location")) {
+                    alert("שגיאת מיקום (403): גוגל חוסמת גישה ל-API מהאזור שלך. כדי להפעיל את העוזר, יש להשתמש בתוסף VPN חינמי (למשל לאירופה/ארה״ב).");
+                } else {
+                    alert(`שגיאת שרת מגוגל (${response.status}):\n${errorMsg}`);
                 }
-
-                if (!response.ok) {
-                    alert("הודעת שגיאה ישירה מגוגל: " + (data.error?.message || response.status));
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                return data.candidates?.[0]?.content?.parts?.[0]?.text;
-            } catch (error) {
-                if (i === retries - 1) {
-                    console.error("API Error:", error);
-                    throw error;
-                }
-                await new Promise(res => setTimeout(res, delays[i]));
+                throw new Error(`API Error: ${response.status} - ${errorMsg}`);
             }
+            
+            return data.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+        } catch (error) {
+            console.error("API Fetch Error:", error);
+            // Handling the specific "Failed to fetch" error caused by proxies or severe network blocks
+            if(error.name === "TypeError" && error.message === "Failed to fetch") {
+                 alert("שגיאת רשת: הדפדפן לא מצליח להתחבר לשרתי גוגל. ייתכן שיש חסימת רשת, או שהופעל חוסם פרסומות מחמיר.");
+            }
+            throw error;
         }
     }
 
@@ -1205,7 +1203,10 @@
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizQuestion')]);
         } catch(e) { 
             document.getElementById('aiLoading2').classList.add('hidden'); 
-            alert("הייתה בעיה ביצירת השאלה. אנא נסה שנית.");
+            // Only alert here if the error wasn't already alerted inside callGeminiAPI
+            if(e.message && !e.message.includes("API Error")) {
+                alert("הייתה בעיה ביצירת השאלה (פורמט לא תקין). אנא נסה שנית.");
+            }
         }
     }
 
@@ -1240,7 +1241,9 @@
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizQuestion')]);
         } catch(e) { 
             document.getElementById('sturmLoading').classList.add('hidden');
-            alert("הייתה בעיה ביצירת השאלה. אנא נסה שנית.");
+            if(e.message && !e.message.includes("API Error")) {
+                alert("הייתה בעיה ביצירת השאלה. אנא נסה שנית.");
+            }
         }
     }
 
