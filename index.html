@@ -6,7 +6,6 @@
     <title>המד״רון - מדריך המד״ר הגדול 104136</title>
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind config for Dark Mode -->
     <script>
         tailwind.config = {
             darkMode: 'class'
@@ -150,7 +149,7 @@
 
         <div class="bg-blue-50 dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-blue-200 dark:border-slate-700 mb-8 transition-colors duration-300">
             <h3 class="text-xl font-bold text-blue-900 dark:text-blue-300 mb-5 flex items-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 תרשים זרימה: גישה לשאלת סדר ראשון במבחן
             </h3>
             <div class="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-blue-200 dark:before:bg-slate-700">
@@ -713,7 +712,7 @@
 
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
                 <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">מנת ריילי (Rayleigh Quotient)</h3>
-                <p class="mb-4 text-sm text-slate-600 dark:text-slate-400">כלי חזק המשמש לקביעת הסימן של הערכים העצמיים (למשל, כדי להוכיח במבחן שכל $\lambda \ge 0$). הנוסחה מתקבלת מהכפלת המשוואה ב-$y$ וביצוע אינטגרציה בחלקים:</p>
+                <p class="mb-4 text-sm text-slate-600 dark:text-slate-400">כלי חזק המשמש לקביעת הסימן של הערכים עצמיים (למשל, כדי להוכיח במבחן שכל $\lambda \ge 0$). הנוסחה מתקבלת מהכפלת המשוואה ב-$y$ וביצוע אינטגרציה בחלקים:</p>
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg overflow-x-auto text-center text-slate-800 dark:text-slate-200 text-sm">
                     $$\lambda = \frac{-p(x)y(x)y'(x)\big|_a^b + \int_a^b \left[ p(x)(y')^2 + q(x)y^2 \right] dx}{\int_a^b r(x) y^2 dx}$$
                 </div>
@@ -1110,81 +1109,55 @@
         currentTrajectories.push({ startX: startX, startY: startY, points: backwardPts.concat(forwardPts), color: myColor });
     }
 
-    // --- Gemini API Setup (Robust Multi-Model Fallback) ---
+    // --- Gemini API Setup (Strict Fetch) ---
     async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
-        const apiKey = getStoredApiKey()?.trim();
+        const apiKey = getStoredApiKey();
         if (!apiKey) {
             alert("חובה להזין מפתח API בלשונית 'מבוא ומושגים' כדי להשתמש בעוזר החכם.");
             throw new Error("Missing API Key");
         }
 
-        // רשימת מודלים לנסות במקרה של שגיאת 404 (לא נמצא)
-        const modelsToTry = [
-            "gemini-1.5-flash", 
-            "gemini-1.5-flash-latest", 
-            "gemini-1.5-pro",
-            "gemini-pro"
-        ];
-        
-        let lastError = "";
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
+        const payload = { 
+            contents: [{ parts: [{ text: userPrompt }] }], 
+            systemInstruction: { parts: [{ text: systemPrompt }] }
+        };
 
-        for (let modelName of modelsToTry) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-            const payload = { 
-                contents: [{ parts: [{ text: userPrompt }] }]
-            };
-
-            // ל-gemini-pro הישן יש בעיה עם systemInstruction
-            if (modelName !== "gemini-pro") {
-                payload.systemInstruction = { parts: [{ text: systemPrompt }] };
-                if (isJson) {
-                    payload.generationConfig = { responseMimeType: "application/json" };
-                }
-            } else {
-                payload.contents[0].parts[0].text = "System: " + systemPrompt + "\n\nUser: " + userPrompt;
-            }
-
-            try {
-                const response = await fetch(url, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify(payload) 
-                });
-                
-                const data = await response.json().catch(() => ({}));
-                
-                if (!response.ok) {
-                    let errorMsg = data.error?.message || response.statusText;
-                    
-                    if (response.status === 404) {
-                        console.warn(`Model ${modelName} returned 404. Trying next model...`);
-                        lastError = errorMsg;
-                        continue; // מדלג למודל הבא ברשימה
-                    } else if (response.status === 400 && errorMsg.includes("API key not valid")) {
-                         alert("המפתח שהוזן אינו תקין. ודא שהעתקת אותו במלואו מה-AI Studio.");
-                         throw new Error("Invalid API Key");
-                    } else if (response.status === 403 || errorMsg.toLowerCase().includes("location")) {
-                         alert("שגיאת מיקום (403): גוגל חוסמת את הבקשה. יש להפעיל VPN (למשל לאירופה/ארה״ב).");
-                         throw new Error("Location Blocked");
-                    } else {
-                        alert(`שגיאת שרת גוגל (${response.status}):\n${errorMsg}`);
-                        throw new Error(`API Error: ${response.status}`);
-                    }
-                }
-                
-                return data.candidates?.[0]?.content?.parts?.[0]?.text;
-                
-            } catch (error) {
-                if (error.message !== "Failed to fetch" && !error.message.includes("404")) {
-                    throw error;
-                }
-                console.error(`Fetch failed for ${modelName}:`, error);
-                lastError = error.message;
-            }
+        if (isJson) {
+            payload.generationConfig = { responseMimeType: "application/json" };
         }
-        
-        alert("כל ניסיונות ההתחברות למודלים השונים של גוגל נכשלו. השגיאה האחרונה: " + lastError);
-        throw new Error("All models failed");
+
+        try {
+            const response = await fetch(url, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(payload) 
+            });
+            
+            if (!response.ok) {
+                const data = await response.json().catch(() => ({}));
+                let errorMsg = data.error?.message || response.statusText;
+                
+                if (response.status === 400 && errorMsg.includes("API key not valid")) {
+                     alert("שגיאה 400: המפתח שהוזן אינו תקין. אנא ודא שהעתקת אותו במלואו מה-AI Studio ללא רווחים.");
+                } else if (response.status === 403 || errorMsg.toLowerCase().includes("location") || errorMsg.toLowerCase().includes("unsupported environment")) {
+                     alert("שגיאת מיקום (403): גוגל חוסמת את הבקשה מישראל. אנא ודא שה-VPN שלך פועל על ארה״ב או אירופה.");
+                } else {
+                    alert(`שגיאת שרת מגוגל (${response.status}):\n${errorMsg}`);
+                }
+                throw new Error(`API Error: ${response.status} - ${errorMsg}`);
+            }
+            
+            const data = await response.json();
+            return data.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+        } catch (error) {
+            console.error("API Fetch Error:", error);
+            if (error.name === "TypeError" || error.message.includes("Failed to fetch")) {
+                alert("שגיאת רשת: לא ניתן להתחבר לשרתי גוגל. אם אתה בישראל, ייתכן שזו חסימת מיקום. אנא ודא שה-VPN פועל ונסה שוב.");
+            }
+            throw error;
+        }
     }
 
     async function analyzeEquation() {
@@ -1228,6 +1201,9 @@
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizQuestion')]);
         } catch(e) { 
             document.getElementById('aiLoading2').classList.add('hidden'); 
+            if(e.message && !e.message.includes("API Error") && !e.message.includes("Failed to fetch")) {
+                alert("הייתה בעיה ביצירת השאלה (חוסר התאמה בפורמט התשובה). אנא נסה שנית.");
+            }
         }
     }
 
@@ -1262,6 +1238,9 @@
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizQuestion')]);
         } catch(e) { 
             document.getElementById('sturmLoading').classList.add('hidden');
+            if(e.message && !e.message.includes("API Error") && !e.message.includes("Failed to fetch")) {
+                alert("הייתה בעיה ביצירת השאלה (חוסר התאמה בפורמט התשובה). אנא נסה שנית.");
+            }
         }
     }
 
