@@ -36,6 +36,14 @@
         #slopeFieldCanvas { border-radius: 0.5rem; width: 100%; height: auto; cursor: crosshair; transition: border-color 0.3s ease; }
         #phaseChart { width: 100% !important; height: 100% !important; }
     </style>
+    <!-- הוספת מפת ייבוא עבור ה-SDK של Gemini -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
 </head>
 <body class="text-slate-800 bg-slate-50 dark:bg-slate-900 dark:text-slate-200 antialiased overflow-x-hidden">
 
@@ -713,7 +721,7 @@
 
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
                 <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">מנת ריילי (Rayleigh Quotient)</h3>
-                <p class="mb-4 text-sm text-slate-600 dark:text-slate-400">כלי חזק המשמש לקביעת הסימן של הערכים העצמיים (למשל, כדי להוכיח במבחן שכל $\lambda \ge 0$). הנוסחה מתקבלת מהכפלת המשוואה ב-$y$ וביצוע אינטגרציה בחלקים:</p>
+                <p class="mb-4 text-sm text-slate-600 dark:text-slate-400">כלי חזק המשמש לקביעת הסימן של הערכים עצמיים (למשל, כדי להוכיח במבחן שכל $\lambda \ge 0$). הנוסחה מתקבלת מהכפלת המשוואה ב-$y$ וביצוע אינטגרציה בחלקים:</p>
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg overflow-x-auto text-center text-slate-800 dark:text-slate-200 text-sm">
                     $$\lambda = \frac{-p(x)y(x)y'(x)\big|_a^b + \int_a^b \left[ p(x)(y')^2 + q(x)y^2 \right] dx}{\int_a^b r(x) y^2 dx}$$
                 </div>
@@ -834,24 +842,23 @@
     </div>
 </footer>
 
-<script>
+<script type="module">
     // --- Dark Mode Toggle ---
-    function toggleDarkMode() {
+    window.toggleDarkMode = function() {
         document.documentElement.classList.toggle('dark');
         const isDark = document.documentElement.classList.contains('dark');
         document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
         
-        // Force complete redraw of canvas components with correct colors
         if (window.phaseChartInstance) {
-            updatePhaseChart();
+            window.updatePhaseChart();
         }
         if (document.getElementById('fields').classList.contains('active')) {
-            drawSlopeField();
+            window.drawSlopeField();
         }
     }
 
     // --- Navigation ---
-    function switchTab(tabId) {
+    window.switchTab = function(tabId) {
         document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('nav-active'));
@@ -864,10 +871,10 @@
         });
         
         if(tabId === 'systems') {
-            if(!window.phaseChartInstance) setTimeout(initPhaseChart, 100);
+            if(!window.phaseChartInstance) setTimeout(window.initPhaseChart, 100);
         }
         if(tabId === 'fields') {
-            setTimeout(initSlopeField, 100);
+            setTimeout(window.initSlopeField, 100);
         }
     }
 
@@ -876,7 +883,7 @@
         return localStorage.getItem('geminiApiKey');
     }
 
-    function saveApiKey() {
+    window.saveApiKey = function() {
         const keyInput = document.getElementById('userApiKey').value.trim();
         const statusEl = document.getElementById('apiKeyStatus');
         
@@ -903,7 +910,7 @@
     });
 
     // --- Higher Order: Undetermined Coefficients Builder ---
-    function generateGuess() {
+    window.generateGuess = function() {
         const polyDeg = parseInt(document.getElementById('polyDegree').value);
         const hasExp = document.getElementById('hasExp').value === 'yes';
         const hasTrig = document.getElementById('hasTrig').value === 'yes';
@@ -936,9 +943,9 @@
     }
 
     // --- Systems: Phase Diagram ---
-    let phaseChartInstance = null;
-    function initPhaseChart() { updatePhaseChart(); }
-    function updatePhaseChart() {
+    window.phaseChartInstance = null;
+    window.initPhaseChart = function() { window.updatePhaseChart(); }
+    window.updatePhaseChart = function() {
         const type = document.getElementById('phaseType') ? document.getElementById('phaseType').value : 'spiral-in';
         const canvas = document.getElementById('phaseChart');
         if(!canvas) return;
@@ -972,8 +979,8 @@
             dataPoints.push({x: x, y: y});
         }
 
-        if (phaseChartInstance) phaseChartInstance.destroy();
-        phaseChartInstance = new Chart(ctx, {
+        if (window.phaseChartInstance) window.phaseChartInstance.destroy();
+        window.phaseChartInstance = new Chart(ctx, {
             type: 'scatter',
             data: { datasets: [{ data: dataPoints, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.5)', showLine: true, tension: 0.4, pointRadius: 0, borderWidth: 2 }] },
             options: { 
@@ -1002,11 +1009,11 @@
         return { x: mathMinX + (px / sfWidth) * (mathMaxX - mathMinX), y: mathMinY + ((sfHeight - py) / sfHeight) * (mathMaxY - mathMinY) };
     }
 
-    function toggleCustomEq() {
+    window.toggleCustomEq = function() {
         const selectVal = document.getElementById('slopeEquation').value;
         const customContainer = document.getElementById('customEqContainer');
         if (selectVal === 'custom') { customContainer.classList.remove('hidden'); } else { customContainer.classList.add('hidden'); }
-        initSlopeField();
+        window.initSlopeField();
     }
 
     function evalDerivative(equationStr, x, y) {
@@ -1027,7 +1034,7 @@
         } catch(e) { return 0; }
     }
 
-    function initSlopeField() {
+    window.initSlopeField = function() {
         sfCanvas = document.getElementById('slopeFieldCanvas');
         if(!sfCanvas) return;
         sfCtx = sfCanvas.getContext('2d');
@@ -1038,16 +1045,16 @@
                 const py = (e.clientY - rect.top) * (sfCanvas.height / rect.height);
                 const mathPt = pxToMath(px, py);
                 calculateTrajectory(mathPt.x, mathPt.y);
-                drawSlopeField();
+                window.drawSlopeField();
             });
             sfCanvas.hasClickListener = true;
         }
-        currentTrajectories = []; drawSlopeField();
+        currentTrajectories = []; window.drawSlopeField();
     }
 
-    function clearTrajectories() { currentTrajectories = []; drawSlopeField(); }
+    window.clearTrajectories = function() { currentTrajectories = []; window.drawSlopeField(); }
 
-    function drawSlopeField() {
+    window.drawSlopeField = function() {
         if(!sfCtx) return;
         const isDark = document.documentElement.classList.contains('dark');
         const bgColor = isDark ? '#0f172a' : '#ffffff';
@@ -1111,7 +1118,9 @@
         currentTrajectories.push({ startX: startX, startY: startY, points: backwardPts.concat(forwardPts), color: myColor });
     }
 
-    // --- Gemini API Setup (No Proxy, Clear Errors) ---
+    // --- Gemini SDK Integration ---
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+
     async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
         const apiKey = getStoredApiKey()?.trim();
         if (!apiKey) {
@@ -1119,50 +1128,44 @@
             throw new Error("Missing API Key");
         }
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        const payload = { 
-            contents: [{ parts: [{ text: userPrompt }] }], 
-            systemInstruction: { parts: [{ text: systemPrompt }] }
-        };
-
-        if (isJson) {
-            payload.generationConfig = { responseMimeType: "application/json" };
-        }
-
         try {
-            const response = await fetch(url, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify(payload) 
-            });
-            const data = await response.json();
+            // Initialize the SDK with the user's API key
+            const genAI = new GoogleGenerativeAI(apiKey);
             
-            if (!response.ok) {
-                let errorMsg = data.error?.message || "שגיאה לא ידועה משרתי גוגל";
-                
-                if (response.status === 400 && errorMsg.includes("API key not valid")) {
-                    alert("שגיאה 400: המפתח שהוזן אינו תקין. אנא ודא שהעתקת אותו במלואו מה-AI Studio.");
-                } else if (response.status === 403 || errorMsg.toLowerCase().includes("location")) {
-                    alert("שגיאת מיקום (403): גוגל חוסמת גישה ל-API מהאזור שלך. כדי להפעיל את העוזר, יש להשתמש בתוסף VPN חינמי (למשל לאירופה/ארה״ב).");
-                } else {
-                    alert(`שגיאת שרת מגוגל (${response.status}):\n${errorMsg}`);
-                }
-                throw new Error(`API Error: ${response.status} - ${errorMsg}`);
+            // Set up model configuration
+            const modelConfig = {
+                systemInstruction: systemPrompt
+            };
+
+            // Force strict JSON output if requested
+            if (isJson) {
+                modelConfig.generationConfig = { responseMimeType: "application/json" };
             }
-            
-            return data.candidates?.[0]?.content?.parts?.[0]?.text;
-            
+
+            // Using the stable public model
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", ...modelConfig });
+
+            // Make the call
+            const result = await model.generateContent(userPrompt);
+            const response = await result.response;
+            return response.text();
+
         } catch (error) {
-            console.error("API Fetch Error:", error);
-            // Handling the specific "Failed to fetch" error caused by proxies or severe network blocks
-            if(error.name === "TypeError" && error.message === "Failed to fetch") {
-                 alert("שגיאת רשת: הדפדפן לא מצליח להתחבר לשרתי גוגל. ייתכן שיש חסימת רשת, או שהופעל חוסם פרסומות מחמיר.");
+            console.error("SDK Error:", error);
+            
+            // User-friendly error translation based on SDK errors
+            if (error.message && error.message.includes("API key not valid")) {
+                alert("המפתח שהוזן אינו תקין. אנא ודא שהעתקת אותו במלואו מה-AI Studio.");
+            } else if (error.message && error.message.toLowerCase().includes("location")) {
+                alert("שגיאת מיקום: נראה שגוגל עדיין חוסמת את הבקשה מהאזור הזה. נסה להשתמש ב-VPN או לבדוק את הגדרות החשבון שלך.");
+            } else {
+                 alert("שגיאה בתקשורת עם השרת: " + error.message);
             }
             throw error;
         }
     }
 
-    async function analyzeEquation() {
+    window.analyzeEquation = async function() {
         if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); return; }
         const inputEl = document.getElementById('aiEqInput');
         if(!inputEl.value.trim()) return;
@@ -1180,8 +1183,8 @@
         } catch(e) { document.getElementById('aiLoading1').classList.add('hidden'); }
     }
 
-    let currentQuizAnswer = "";
-    async function generateQuiz() {
+    window.currentQuizAnswer = "";
+    window.generateQuiz = async function() {
         if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); return; }
         document.getElementById('aiQuizResult').classList.remove('hidden');
         document.getElementById('aiLoading2').classList.remove('hidden');
@@ -1198,28 +1201,24 @@
             let cleanText = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             const quizData = JSON.parse(cleanText);
             document.getElementById('aiQuizQuestion').innerHTML = quizData.question;
-            currentQuizAnswer = quizData.answer;
+            window.currentQuizAnswer = quizData.answer;
             document.getElementById('showAnswerBtn').classList.remove('hidden');
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizQuestion')]);
         } catch(e) { 
             document.getElementById('aiLoading2').classList.add('hidden'); 
-            // Only alert here if the error wasn't already alerted inside callGeminiAPI
-            if(e.message && !e.message.includes("API Error")) {
-                alert("הייתה בעיה ביצירת השאלה (פורמט לא תקין). אנא נסה שנית.");
-            }
         }
     }
 
-    function toggleAnswer() {
-        document.getElementById('aiQuizAnswer').innerHTML = currentQuizAnswer;
+    window.toggleAnswer = function() {
+        document.getElementById('aiQuizAnswer').innerHTML = window.currentQuizAnswer;
         document.getElementById('aiQuizAnswer').classList.remove('hidden');
         document.getElementById('showAnswerBtn').classList.add('hidden');
         if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizAnswer')]);
     }
 
     // --- Sturm-Liouville Quiz ---
-    let currentSturmAnswer = "";
-    async function generateSturmQuiz() {
+    window.currentSturmAnswer = "";
+    window.generateSturmQuiz = async function() {
         if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); return; }
         document.getElementById('sturmQuizResult').classList.remove('hidden');
         document.getElementById('sturmLoading').classList.remove('hidden');
@@ -1236,19 +1235,16 @@
             let cleanText = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             const quizData = JSON.parse(cleanText);
             document.getElementById('sturmQuizQuestion').innerHTML = quizData.question;
-            currentSturmAnswer = quizData.answer;
+            window.currentSturmAnswer = quizData.answer;
             document.getElementById('showSturmAnswerBtn').classList.remove('hidden');
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizQuestion')]);
         } catch(e) { 
             document.getElementById('sturmLoading').classList.add('hidden');
-            if(e.message && !e.message.includes("API Error")) {
-                alert("הייתה בעיה ביצירת השאלה. אנא נסה שנית.");
-            }
         }
     }
 
-    function toggleSturmAnswer() {
-        document.getElementById('sturmQuizAnswer').innerHTML = currentSturmAnswer;
+    window.toggleSturmAnswer = function() {
+        document.getElementById('sturmQuizAnswer').innerHTML = window.currentSturmAnswer;
         document.getElementById('sturmQuizAnswer').classList.remove('hidden');
         document.getElementById('showSturmAnswerBtn').classList.add('hidden');
         if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizAnswer')]);
