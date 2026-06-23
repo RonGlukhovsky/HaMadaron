@@ -36,14 +36,6 @@
         #slopeFieldCanvas { border-radius: 0.5rem; width: 100%; height: auto; cursor: crosshair; transition: border-color 0.3s ease; }
         #phaseChart { width: 100% !important; height: 100% !important; }
     </style>
-    <!-- הוספת מפת ייבוא עבור ה-SDK של Gemini -->
-    <script type="importmap">
-      {
-        "imports": {
-          "@google/generative-ai": "https://esm.run/@google/generative-ai"
-        }
-      }
-    </script>
 </head>
 <body class="text-slate-800 bg-slate-50 dark:bg-slate-900 dark:text-slate-200 antialiased overflow-x-hidden">
 
@@ -721,7 +713,7 @@
 
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
                 <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">מנת ריילי (Rayleigh Quotient)</h3>
-                <p class="mb-4 text-sm text-slate-600 dark:text-slate-400">כלי חזק המשמש לקביעת הסימן של הערכים עצמיים (למשל, כדי להוכיח במבחן שכל $\lambda \ge 0$). הנוסחה מתקבלת מהכפלת המשוואה ב-$y$ וביצוע אינטגרציה בחלקים:</p>
+                <p class="mb-4 text-sm text-slate-600 dark:text-slate-400">כלי חזק המשמש לקביעת הסימן של הערכים העצמיים (למשל, כדי להוכיח במבחן שכל $\lambda \ge 0$). הנוסחה מתקבלת מהכפלת המשוואה ב-$y$ וביצוע אינטגרציה בחלקים:</p>
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg overflow-x-auto text-center text-slate-800 dark:text-slate-200 text-sm">
                     $$\lambda = \frac{-p(x)y(x)y'(x)\big|_a^b + \int_a^b \left[ p(x)(y')^2 + q(x)y^2 \right] dx}{\int_a^b r(x) y^2 dx}$$
                 </div>
@@ -842,23 +834,23 @@
     </div>
 </footer>
 
-<script type="module">
+<script>
     // --- Dark Mode Toggle ---
-    window.toggleDarkMode = function() {
+    function toggleDarkMode() {
         document.documentElement.classList.toggle('dark');
         const isDark = document.documentElement.classList.contains('dark');
         document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
         
         if (window.phaseChartInstance) {
-            window.updatePhaseChart();
+            updatePhaseChart();
         }
         if (document.getElementById('fields').classList.contains('active')) {
-            window.drawSlopeField();
+            drawSlopeField();
         }
     }
 
     // --- Navigation ---
-    window.switchTab = function(tabId) {
+    function switchTab(tabId) {
         document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('nav-active'));
@@ -871,10 +863,10 @@
         });
         
         if(tabId === 'systems') {
-            if(!window.phaseChartInstance) setTimeout(window.initPhaseChart, 100);
+            if(!window.phaseChartInstance) setTimeout(initPhaseChart, 100);
         }
         if(tabId === 'fields') {
-            setTimeout(window.initSlopeField, 100);
+            setTimeout(initSlopeField, 100);
         }
     }
 
@@ -883,7 +875,7 @@
         return localStorage.getItem('geminiApiKey');
     }
 
-    window.saveApiKey = function() {
+    function saveApiKey() {
         const keyInput = document.getElementById('userApiKey').value.trim();
         const statusEl = document.getElementById('apiKeyStatus');
         
@@ -910,7 +902,7 @@
     });
 
     // --- Higher Order: Undetermined Coefficients Builder ---
-    window.generateGuess = function() {
+    function generateGuess() {
         const polyDeg = parseInt(document.getElementById('polyDegree').value);
         const hasExp = document.getElementById('hasExp').value === 'yes';
         const hasTrig = document.getElementById('hasTrig').value === 'yes';
@@ -943,9 +935,9 @@
     }
 
     // --- Systems: Phase Diagram ---
-    window.phaseChartInstance = null;
-    window.initPhaseChart = function() { window.updatePhaseChart(); }
-    window.updatePhaseChart = function() {
+    let phaseChartInstance = null;
+    function initPhaseChart() { updatePhaseChart(); }
+    function updatePhaseChart() {
         const type = document.getElementById('phaseType') ? document.getElementById('phaseType').value : 'spiral-in';
         const canvas = document.getElementById('phaseChart');
         if(!canvas) return;
@@ -979,8 +971,8 @@
             dataPoints.push({x: x, y: y});
         }
 
-        if (window.phaseChartInstance) window.phaseChartInstance.destroy();
-        window.phaseChartInstance = new Chart(ctx, {
+        if (phaseChartInstance) phaseChartInstance.destroy();
+        phaseChartInstance = new Chart(ctx, {
             type: 'scatter',
             data: { datasets: [{ data: dataPoints, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.5)', showLine: true, tension: 0.4, pointRadius: 0, borderWidth: 2 }] },
             options: { 
@@ -1009,11 +1001,11 @@
         return { x: mathMinX + (px / sfWidth) * (mathMaxX - mathMinX), y: mathMinY + ((sfHeight - py) / sfHeight) * (mathMaxY - mathMinY) };
     }
 
-    window.toggleCustomEq = function() {
+    function toggleCustomEq() {
         const selectVal = document.getElementById('slopeEquation').value;
         const customContainer = document.getElementById('customEqContainer');
         if (selectVal === 'custom') { customContainer.classList.remove('hidden'); } else { customContainer.classList.add('hidden'); }
-        window.initSlopeField();
+        initSlopeField();
     }
 
     function evalDerivative(equationStr, x, y) {
@@ -1034,7 +1026,7 @@
         } catch(e) { return 0; }
     }
 
-    window.initSlopeField = function() {
+    function initSlopeField() {
         sfCanvas = document.getElementById('slopeFieldCanvas');
         if(!sfCanvas) return;
         sfCtx = sfCanvas.getContext('2d');
@@ -1045,16 +1037,16 @@
                 const py = (e.clientY - rect.top) * (sfCanvas.height / rect.height);
                 const mathPt = pxToMath(px, py);
                 calculateTrajectory(mathPt.x, mathPt.y);
-                window.drawSlopeField();
+                drawSlopeField();
             });
             sfCanvas.hasClickListener = true;
         }
-        currentTrajectories = []; window.drawSlopeField();
+        currentTrajectories = []; drawSlopeField();
     }
 
-    window.clearTrajectories = function() { currentTrajectories = []; window.drawSlopeField(); }
+    function clearTrajectories() { currentTrajectories = []; drawSlopeField(); }
 
-    window.drawSlopeField = function() {
+    function drawSlopeField() {
         if(!sfCtx) return;
         const isDark = document.documentElement.classList.contains('dark');
         const bgColor = isDark ? '#0f172a' : '#ffffff';
@@ -1118,7 +1110,7 @@
         currentTrajectories.push({ startX: startX, startY: startY, points: backwardPts.concat(forwardPts), color: myColor });
     }
 
-    // --- Gemini API Setup (Fallback to strict Fetch) ---
+    // --- Gemini API Setup (Robust Multi-Model Fallback) ---
     async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
         const apiKey = getStoredApiKey()?.trim();
         if (!apiKey) {
@@ -1126,18 +1118,32 @@
             throw new Error("Missing API Key");
         }
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        const payload = { 
-            contents: [{ parts: [{ text: userPrompt }] }], 
-            systemInstruction: { parts: [{ text: systemPrompt }] }
-        };
+        // רשימת מודלים לנסות במקרה של שגיאת 404 (לא נמצא)
+        const modelsToTry = [
+            "gemini-1.5-flash", 
+            "gemini-1.5-flash-latest", 
+            "gemini-1.5-pro",
+            "gemini-pro"
+        ];
+        
+        let lastError = "";
 
-        if (isJson) {
-            payload.generationConfig = { responseMimeType: "application/json" };
-        }
+        for (let modelName of modelsToTry) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+            const payload = { 
+                contents: [{ parts: [{ text: userPrompt }] }]
+            };
 
-        let retries = 3; let delays = [1000, 2000, 4000];
-        for (let i = 0; i < retries; i++) {
+            // ל-gemini-pro הישן יש בעיה עם systemInstruction
+            if (modelName !== "gemini-pro") {
+                payload.systemInstruction = { parts: [{ text: systemPrompt }] };
+                if (isJson) {
+                    payload.generationConfig = { responseMimeType: "application/json" };
+                }
+            } else {
+                payload.contents[0].parts[0].text = "System: " + systemPrompt + "\n\nUser: " + userPrompt;
+            }
+
             try {
                 const response = await fetch(url, { 
                     method: 'POST', 
@@ -1145,39 +1151,43 @@
                     body: JSON.stringify(payload) 
                 });
                 
+                const data = await response.json().catch(() => ({}));
+                
                 if (!response.ok) {
-                    const data = await response.json().catch(() => ({}));
                     let errorMsg = data.error?.message || response.statusText;
                     
-                    // Specific handling for known 400 errors if possible, otherwise generic server error
-                    if (response.status === 400 && errorMsg.includes("API key not valid")) {
-                         alert("שגיאה 400: המפתח שהוזן אינו תקין. אנא ודא שהעתקת אותו במלואו מה-AI Studio.");
+                    if (response.status === 404) {
+                        console.warn(`Model ${modelName} returned 404. Trying next model...`);
+                        lastError = errorMsg;
+                        continue; // מדלג למודל הבא ברשימה
+                    } else if (response.status === 400 && errorMsg.includes("API key not valid")) {
+                         alert("המפתח שהוזן אינו תקין. ודא שהעתקת אותו במלואו מה-AI Studio.");
+                         throw new Error("Invalid API Key");
                     } else if (response.status === 403 || errorMsg.toLowerCase().includes("location")) {
-                         alert("שגיאת מיקום (403): נראה שגוגל חוסמת את הבקשה מהאזור הזה. נסה להשתמש ב-VPN.");
+                         alert("שגיאת מיקום (403): גוגל חוסמת את הבקשה. יש להפעיל VPN (למשל לאירופה/ארה״ב).");
+                         throw new Error("Location Blocked");
                     } else {
-                        // Generic error for other issues
-                        alert(`שגיאת שרת מגוגל (${response.status}):\n${errorMsg}`);
+                        alert(`שגיאת שרת גוגל (${response.status}):\n${errorMsg}`);
+                        throw new Error(`API Error: ${response.status}`);
                     }
-                    throw new Error(`API Error: ${response.status} - ${errorMsg}`);
                 }
                 
-                const data = await response.json();
                 return data.candidates?.[0]?.content?.parts?.[0]?.text;
                 
             } catch (error) {
-                console.error("API Fetch Error:", error);
-                
-                if (i === retries - 1) {
-                    // This is the fallback message you requested for network/connection issues
-                    alert("לא ניתן להתחבר לשרתי גוגל. ייתכן שיש חסימת מיקום (אופייני לישראל) או בעיית רשת.\n\nמומלץ לנסות שוב בעזרת תוסף VPN חינמי, למשל TouchVPN לכרום: https://chrome.google.com/webstore/detail/touch-vpn-secure-and-unli/bihmplhobchoageeokmcmpbahlhpnjbg");
+                if (error.message !== "Failed to fetch" && !error.message.includes("404")) {
                     throw error;
                 }
-                await new Promise(res => setTimeout(res, delays[i]));
+                console.error(`Fetch failed for ${modelName}:`, error);
+                lastError = error.message;
             }
         }
+        
+        alert("כל ניסיונות ההתחברות למודלים השונים של גוגל נכשלו. השגיאה האחרונה: " + lastError);
+        throw new Error("All models failed");
     }
 
-    window.analyzeEquation = async function() {
+    async function analyzeEquation() {
         if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); return; }
         const inputEl = document.getElementById('aiEqInput');
         if(!inputEl.value.trim()) return;
@@ -1195,8 +1205,8 @@
         } catch(e) { document.getElementById('aiLoading1').classList.add('hidden'); }
     }
 
-    window.currentQuizAnswer = "";
-    window.generateQuiz = async function() {
+    let currentQuizAnswer = "";
+    async function generateQuiz() {
         if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); return; }
         document.getElementById('aiQuizResult').classList.remove('hidden');
         document.getElementById('aiLoading2').classList.remove('hidden');
@@ -1213,7 +1223,7 @@
             let cleanText = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             const quizData = JSON.parse(cleanText);
             document.getElementById('aiQuizQuestion').innerHTML = quizData.question;
-            window.currentQuizAnswer = quizData.answer;
+            currentQuizAnswer = quizData.answer;
             document.getElementById('showAnswerBtn').classList.remove('hidden');
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizQuestion')]);
         } catch(e) { 
@@ -1221,16 +1231,16 @@
         }
     }
 
-    window.toggleAnswer = function() {
-        document.getElementById('aiQuizAnswer').innerHTML = window.currentQuizAnswer;
+    function toggleAnswer() {
+        document.getElementById('aiQuizAnswer').innerHTML = currentQuizAnswer;
         document.getElementById('aiQuizAnswer').classList.remove('hidden');
         document.getElementById('showAnswerBtn').classList.add('hidden');
         if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizAnswer')]);
     }
 
     // --- Sturm-Liouville Quiz ---
-    window.currentSturmAnswer = "";
-    window.generateSturmQuiz = async function() {
+    let currentSturmAnswer = "";
+    async function generateSturmQuiz() {
         if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); return; }
         document.getElementById('sturmQuizResult').classList.remove('hidden');
         document.getElementById('sturmLoading').classList.remove('hidden');
@@ -1247,7 +1257,7 @@
             let cleanText = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             const quizData = JSON.parse(cleanText);
             document.getElementById('sturmQuizQuestion').innerHTML = quizData.question;
-            window.currentSturmAnswer = quizData.answer;
+            currentSturmAnswer = quizData.answer;
             document.getElementById('showSturmAnswerBtn').classList.remove('hidden');
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizQuestion')]);
         } catch(e) { 
@@ -1255,8 +1265,8 @@
         }
     }
 
-    window.toggleSturmAnswer = function() {
-        document.getElementById('sturmQuizAnswer').innerHTML = window.currentSturmAnswer;
+    function toggleSturmAnswer() {
+        document.getElementById('sturmQuizAnswer').innerHTML = currentSturmAnswer;
         document.getElementById('sturmQuizAnswer').classList.remove('hidden');
         document.getElementById('showSturmAnswerBtn').classList.add('hidden');
         if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizAnswer')]);
