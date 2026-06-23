@@ -6,6 +6,7 @@
     <title>המד״רון - מדריך המד״ר הגדול 104136</title>
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind config for Dark Mode -->
     <script>
         tailwind.config = {
             darkMode: 'class'
@@ -50,7 +51,7 @@
             </button>
         </div>
         <nav class="flex space-x-reverse space-x-6 overflow-x-auto pb-2 text-slate-100 dark:text-slate-300" id="main-nav">
-            <button onclick="switchTab('intro')" class="nav-btn nav-active pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">מבוא ומושגים</button>
+            <button onclick="switchTab('intro')" class="nav-btn nav-active pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">מבוא</button>
             <button onclick="switchTab('first-order')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">סדר ראשון</button>
             <button onclick="switchTab('higher-order')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">סדר עליון</button>
             <button onclick="switchTab('fields')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">שדות כיוון ותפירה</button>
@@ -64,7 +65,6 @@
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-300">
 
-    <!-- Intro Tab -->
     <section id="intro" class="section-content active">
         <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-8 border border-slate-200 dark:border-slate-700 transition-colors duration-300 mb-8">
             <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-4">ברוכים הבאים למדריך המקיף</h2>
@@ -81,16 +81,13 @@
             </div>
         </div>
 
-        <!-- NEW: Glossary (מקראה) -->
         <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-8 border border-slate-200 dark:border-slate-700 transition-colors duration-300 mb-8">
             <h3 class="text-2xl font-bold text-slate-800 dark:text-white mb-6 border-b border-slate-100 dark:border-slate-700 pb-2">מקראה: סיווג משוואות ומושגי יסוד</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-slate-700 dark:text-slate-300">
-                
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-lg border border-slate-200 dark:border-slate-600">
                     <h4 class="font-bold text-blue-700 dark:text-blue-400 text-lg mb-2">סדר המשוואה (Order)</h4>
                     <p class="text-sm">הנגזרת הגבוהה ביותר שמופיעה במשוואה. למשל, במשוואה $y''' + 2y' = x$ הסדר הוא <strong>3</strong>.</p>
                 </div>
-
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-lg border border-slate-200 dark:border-slate-600">
                     <h4 class="font-bold text-emerald-700 dark:text-emerald-400 text-lg mb-2">לינארית vs לא לינארית</h4>
                     <ul class="text-sm space-y-1 list-disc list-inside">
@@ -98,7 +95,6 @@
                         <li><strong>לא לינארית:</strong> כל מצב אחר. למשל: $y^2$, $e^y$, או מכפלה $y \cdot y'$.</li>
                     </ul>
                 </div>
-
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-lg border border-slate-200 dark:border-slate-600">
                     <h4 class="font-bold text-purple-700 dark:text-purple-400 text-lg mb-2">הומוגנית vs אי-הומוגנית</h4>
                     <ul class="text-sm space-y-1 list-disc list-inside">
@@ -106,7 +102,6 @@
                         <li><strong>בסדר ראשון:</strong> המושג גם מתאר משוואה שניתן לכתוב אותה כתלות ביחס $y/x$ בלבד.</li>
                     </ul>
                 </div>
-
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-5 rounded-lg border border-slate-200 dark:border-slate-600">
                     <h4 class="font-bold text-amber-700 dark:text-amber-400 text-lg mb-2">תנאי התחלה vs תנאי שפה</h4>
                     <ul class="text-sm space-y-1 list-disc list-inside">
@@ -114,11 +109,10 @@
                         <li><strong>תנאי שפה (BVP):</strong> תנאים הניתנים בקצוות שונים של הקטע (למשל $y(0)=0, y(L)=0$). אופייני מאוד לבעיות שטורם-ליוביל.</li>
                     </ul>
                 </div>
-
             </div>
         </div>
 
-        <!-- API Key Configuration Box -->
+        <!-- API Key Box -->
         <div class="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl shadow-sm p-8 border border-emerald-200 dark:border-emerald-800/50 transition-colors duration-300">
             <div class="flex items-center gap-3 mb-4">
                 <span class="text-3xl">🤖</span>
@@ -132,7 +126,7 @@
                 <h4 class="font-bold text-slate-800 dark:text-slate-100 mb-2">איך מוציאים מפתח? (לוקח דקה)</h4>
                 <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700 dark:text-slate-300">
                     <li>כנסו לאתר <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 dark:text-blue-400 underline font-semibold hover:text-blue-800 dark:hover:text-blue-300">Google AI Studio</a> והתחברו עם חשבון ה-Gmail שלכם.</li>
-                    <li>בתפריט הצדדי השמאלי (לרוב באזור התחתון), חפשו ולחצו על סמל המפתח או על המילים <strong>"Get API key"</strong>.</li>
+                    <li>בתפריט הצדדי השמאלי, חפשו ולחצו על סמל המפתח <strong>"Get API key"</strong>.</li>
                     <li>לחצו על הכפתור הכחול במרכז המסך <strong>"Create API key"</strong> (ובחרו בפרויקט חדש אם נשאלתם).</li>
                     <li>העתיקו את רצף האותיות והמספרים שקיבלתם והדביקו כאן למטה:</li>
                 </ol>
@@ -155,7 +149,6 @@
             </p>
         </div>
 
-        <!-- Flowchart -->
         <div class="bg-blue-50 dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-blue-200 dark:border-slate-700 mb-8 transition-colors duration-300">
             <h3 class="text-xl font-bold text-blue-900 dark:text-blue-300 mb-5 flex items-center gap-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
@@ -849,6 +842,7 @@
         const isDark = document.documentElement.classList.contains('dark');
         document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
         
+        // Force complete redraw of canvas components with correct colors
         if (window.phaseChartInstance) {
             updatePhaseChart();
         }
@@ -1118,19 +1112,23 @@
         currentTrajectories.push({ startX: startX, startY: startY, points: backwardPts.concat(forwardPts), color: myColor });
     }
 
-    // --- Gemini API (Local Storage Powered with Better Error Handling) ---
-    async function callGeminiAPI(userPrompt, systemPrompt) {
+    // --- Gemini API Setup ---
+    async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
         const apiKey = getStoredApiKey()?.trim();
         if (!apiKey) {
             alert("חובה להזין מפתח API בלשונית 'מבוא ומושגים' כדי להשתמש בעוזר החכם.");
             throw new Error("Missing API Key");
         }
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
         const payload = { 
             contents: [{ parts: [{ text: userPrompt }] }], 
             systemInstruction: { parts: [{ text: systemPrompt }] }
         };
+
+        if (isJson) {
+            payload.generationConfig = { responseMimeType: "application/json" };
+        }
 
         let retries = 5; let delays = [1000, 2000, 4000, 8000, 16000];
         for (let i = 0; i < retries; i++) {
@@ -1166,7 +1164,7 @@
         const sysPrompt = `אתה מתרגל מומחה בקורס מד"ר 104136 בטכניון. זהה את המשוואה, הסבר את הסד"פ, וספק צעד ראשון לפתרון, ללא הפתרון המלא. כתוב בעברית ברורה ועטוף נוסחאות ב-$.`;
         
         try {
-            const responseText = await callGeminiAPI(`נתח: ${inputEl.value.trim()}`, sysPrompt);
+            const responseText = await callGeminiAPI(`נתח: ${inputEl.value.trim()}`, sysPrompt, false);
             document.getElementById('aiLoading1').classList.add('hidden');
             document.getElementById('aiAnalysisContent').innerHTML = responseText;
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiAnalysisContent')]);
@@ -1186,9 +1184,8 @@
         החזר אך ורק אובייקט JSON חוקי בפורמט הבא בדיוק: {"question": "השאלה", "answer": "התשובה וההסבר התיאורטי"} ללא שום מילה נוספת וללא תגיות markdown.`;
         
         try {
-            const rawResponse = await callGeminiAPI("צור שאלת תיאוריה", sysPrompt);
+            const rawResponse = await callGeminiAPI("צור שאלת תיאוריה", sysPrompt, true);
             document.getElementById('aiLoading2').classList.add('hidden');
-            // Clean markdown blocks if the model still outputs them
             let cleanText = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             const quizData = JSON.parse(cleanText);
             document.getElementById('aiQuizQuestion').innerHTML = quizData.question;
@@ -1197,7 +1194,7 @@
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizQuestion')]);
         } catch(e) { 
             document.getElementById('aiLoading2').classList.add('hidden'); 
-            alert("הייתה בעיה ביצירת השאלה (חוסר התאמה בפורמט התשובה מגוגל). נסה שוב.");
+            alert("הייתה בעיה ביצירת השאלה. אנא נסה שנית.");
         }
     }
 
@@ -1222,7 +1219,7 @@
         החזר אך ורק אובייקט JSON חוקי בפורמט הבא בדיוק: {"question": "טענה: [הטענה שלך כאן]", "answer": "נכון / לא נכון. [הסבר תיאורטי מפורט]"} ללא שום מילה נוספת וללא תגיות markdown.`;
         
         try {
-            const rawResponse = await callGeminiAPI("צור שאלת נכון לא נכון שטורם ליוביל", sysPrompt);
+            const rawResponse = await callGeminiAPI("צור שאלת נכון לא נכון שטורם ליוביל", sysPrompt, true);
             document.getElementById('sturmLoading').classList.add('hidden');
             let cleanText = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             const quizData = JSON.parse(cleanText);
@@ -1232,7 +1229,7 @@
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizQuestion')]);
         } catch(e) { 
             document.getElementById('sturmLoading').classList.add('hidden');
-            alert("הייתה בעיה ביצירת השאלה (חוסר התאמה בפורמט התשובה מגוגל). נסה שוב.");
+            alert("הייתה בעיה ביצירת השאלה. אנא נסה שנית.");
         }
     }
 
