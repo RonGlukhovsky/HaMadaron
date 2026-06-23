@@ -1109,15 +1109,15 @@
         currentTrajectories.push({ startX: startX, startY: startY, points: backwardPts.concat(forwardPts), color: myColor });
     }
 
-    // --- Gemini API Setup (Strict Fetch) ---
+    // --- Gemini API Setup (Fallback to strict Fetch) ---
     async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
-        const apiKey = getStoredApiKey();
+        const apiKey = getStoredApiKey()?.trim();
         if (!apiKey) {
             alert("חובה להזין מפתח API בלשונית 'מבוא ומושגים' כדי להשתמש בעוזר החכם.");
             throw new Error("Missing API Key");
         }
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
         const payload = { 
             contents: [{ parts: [{ text: userPrompt }] }], 
             systemInstruction: { parts: [{ text: systemPrompt }] }
@@ -1127,36 +1127,44 @@
             payload.generationConfig = { responseMimeType: "application/json" };
         }
 
-        try {
-            const response = await fetch(url, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify(payload) 
-            });
-            
-            if (!response.ok) {
-                const data = await response.json().catch(() => ({}));
-                let errorMsg = data.error?.message || response.statusText;
+        let retries = 3; let delays = [1000, 2000, 4000];
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(url, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(payload) 
+                });
                 
-                if (response.status === 400 && errorMsg.includes("API key not valid")) {
-                     alert("שגיאה 400: המפתח שהוזן אינו תקין. אנא ודא שהעתקת אותו במלואו מה-AI Studio ללא רווחים.");
-                } else if (response.status === 403 || errorMsg.toLowerCase().includes("location") || errorMsg.toLowerCase().includes("unsupported environment")) {
-                     alert("שגיאת מיקום (403): גוגל חוסמת את הבקשה מישראל. אנא ודא שה-VPN שלך פועל על ארה״ב או אירופה.");
-                } else {
-                    alert(`שגיאת שרת מגוגל (${response.status}):\n${errorMsg}`);
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    let errorMsg = data.error?.message || response.statusText;
+                    
+                    // Specific handling for known errors if possible, otherwise generic server error
+                    if (response.status === 400 && errorMsg.includes("API key not valid")) {
+                         alert("שגיאה 400: המפתח שהוזן אינו תקין. אנא ודא שהעתקת אותו במלואו מה-AI Studio.");
+                    } else if (response.status === 403 || errorMsg.toLowerCase().includes("location")) {
+                         alert("שגיאת מיקום (403): נראה שגוגל חוסמת את הבקשה מהאזור הזה. נסה להשתמש ב-VPN.");
+                    } else {
+                        // Generic error for other issues
+                        alert(`שגיאת שרת מגוגל (${response.status}):\n${errorMsg}`);
+                    }
+                    throw new Error(`API Error: ${response.status} - ${errorMsg}`);
                 }
-                throw new Error(`API Error: ${response.status} - ${errorMsg}`);
+                
+                const data = await response.json();
+                return data.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+            } catch (error) {
+                console.error("API Fetch Error:", error);
+                
+                if (i === retries - 1) {
+                    // This is the fallback message for network/connection issues
+                    alert("לא ניתן להתחבר לשרתי גוגל. ייתכן שיש חסימת מיקום (אופייני לישראל) או בעיית רשת.\n\nמומלץ לנסות שוב בעזרת תוסף VPN חינמי, למשל TouchVPN לכרום: https://chrome.google.com/webstore/detail/touch-vpn-secure-and-unli/bihmplhobchoageeokmcmpbahlhpnjbg");
+                    throw error;
+                }
+                await new Promise(res => setTimeout(res, delays[i]));
             }
-            
-            const data = await response.json();
-            return data.candidates?.[0]?.content?.parts?.[0]?.text;
-            
-        } catch (error) {
-            console.error("API Fetch Error:", error);
-            if (error.name === "TypeError" || error.message.includes("Failed to fetch")) {
-                alert("שגיאת רשת: לא ניתן להתחבר לשרתי גוגל. אם אתה בישראל, ייתכן שזו חסימת מיקום. אנא ודא שה-VPN פועל ונסה שוב.");
-            }
-            throw error;
         }
     }
 
