@@ -46,6 +46,12 @@
         .dark .styled-table tbody tr:nth-of-type(even) { background-color: #0f172a; }
         .styled-table tbody tr:last-of-type { border-bottom: 2px solid #1e40af; }
         .dark .styled-table tbody tr:last-of-type { border-bottom: 2px solid #3b82f6; }
+        
+        /* Accordion transition */
+        .accordion-content { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
+        .accordion-content.expanded { max-height: 500px; opacity: 1; }
+        .accordion-icon { transition: transform 0.3s ease; }
+        .accordion-icon.rotated { transform: rotate(180deg); }
     </style>
 </head>
 <body class="text-slate-800 bg-slate-50 dark:bg-slate-900 dark:text-slate-200 antialiased overflow-x-hidden">
@@ -454,46 +460,61 @@
 
     <!-- Fields and Stitching Tab -->
     <section id="fields" class="section-content">
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-2">שדות כיוון ותפירת פתרונות</h2>
+        <div class="mb-8 border-b border-slate-200 dark:border-slate-700 pb-4">
+            <h2 class="text-3xl font-extrabold text-blue-800 dark:text-blue-400 mb-2">שדות כיוון, תפירת פתרונות ומשוואות אוטונומיות</h2>
             <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
-                פרק זה משלב ראייה אנליטית עם הבנה גיאומטרית. מציאת נולקלינות, תחומי עלייה וירידה, תפירת פתרונות המוגדרים למקוטעין, ושרטוט.
+                פרק זה משלב ראייה אנליטית עם הבנה גיאומטרית. נלמד כיצד לשרטט מסלולי פתרונות ידנית, להבין את הגיאומטריה דרך איזוקלינות, ולתפור פתרונות המוגדרים למקוטעין.
             </p>
+            
+            <!-- Accordion Legend -->
+            <div class="mt-4 border border-blue-200 dark:border-blue-800 rounded-lg overflow-hidden">
+                <button onclick="toggleAccordion('legend-fields')" class="w-full bg-blue-50 dark:bg-slate-800 p-3 text-right flex justify-between items-center font-bold text-blue-800 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-slate-700 transition-colors focus:outline-none">
+                    <span>📖 מקרא מושגים: איזוקלינות, נולקלינות ויציבות</span>
+                    <svg id="icon-legend-fields" class="w-5 h-5 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="legend-fields" class="accordion-content bg-white dark:bg-slate-900 px-4 py-2 border-t border-blue-100 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300">
+                    <ul class="list-disc list-inside space-y-2 mt-2 mb-2">
+                        <li><strong>איזוקלינה (Isocline - עקומת שוות-שיפוע):</strong> עקומה גיאומטרית במישור ה-$xy$ שעליה השיפוע של הפתרונות הוא קבוע. נמצאת על ידי פתרון המשוואה $y' = f(x,y) = k$.</li>
+                        <li><strong>נולקלינה (Nullcline):</strong> מקרה פרטי וחשוב של איזוקלינה שבו השיפוע הוא אפס ($k=0$). כלומר, אוסף הנקודות המקיימות $f(x,y) = 0$. הפתרונות חוצים נולקלינות אלו עם משיק אופקי (נקודות קיצון).</li>
+                        <li><strong>פתרון שיווי משקל (Equilibrium Solution):</strong> במשוואות אוטונומיות ($y'=f(y)$), אלו הם פתרונות קבועים $y(x) \equiv c$ המאפסים את המשוואה ומהווים נולקלינה בפני עצמם.</li>
+                        <li><strong>נקודת יציבות אסימפטוטית (Attractor):</strong> שיווי משקל שמושך אליו את הפתרונות הקרובים לו ככל ש-$x \to \infty$. (תנאי בסיסי: $f'(c) < 0$).</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <!-- Flowchart: Direction Fields -->
         <div class="bg-blue-50 dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-blue-200 dark:border-slate-700 mb-8 transition-colors duration-300">
             <h3 class="text-xl font-bold text-blue-900 dark:text-blue-300 mb-5 flex items-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                תרשים זרימה: סד״פ שרטוט שדות כיוון באופן ידני
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                תרשים זרימה: שרטוט ידני של שדה כיוון ופתרונות
             </h3>
             <div class="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-blue-200 dark:before:bg-slate-700">
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-blue-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">1</div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">מציאת נולקלינות (Nullclines)</h4>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">נשווה את הנגזרת לאפס: <strong class="text-blue-600 dark:text-blue-400">$y' = f(x,y) = 0$</strong>. העקומות שנקבל הן המקומות בהם שיפוע הפתרון הוא אופקי לחלוטין (מציירים עליהן חצים אופקיים).</p>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">מציאת נולקלינות ואיזוקלינות</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">משווים $y' = f(x,y) = 0$ כדי למצוא היכן הפונקציות מקבלות קיצון (משיק אופקי). משווים $y' = k$ עבור מספר ערכים כדי לסמן חצים קטנים ולראות לאן ה"זרם" פונה.</p>
                     </div>
                 </div>
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-emerald-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">2</div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">תחומי עלייה וירידה</h4>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">נבדוק באזורים שבין הנולקלינות (ע"י בחירת נקודות בוחן): האם <strong class="text-emerald-600 dark:text-emerald-400">$y' > 0$</strong> (הפתרון עולה באזור זה $\nearrow$) או <strong class="text-emerald-600 dark:text-emerald-400">$y' < 0$</strong> (הפתרון יורד $\searrow$).</p>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">תחומי עלייה וירידה (מגמה)</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">מחלקים את המישור לאזורים בעזרת הנולקלינות. בודקים נקודה בכל אזור כדי לדעת אם $y'>0$ (הפתרון עולה) או $y'<0$ (הפתרון יורד).</p>
                     </div>
                 </div>
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
                     <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-purple-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">3</div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">איזוקלינות כלליות (אופציונלי)</h4>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">כדי לדייק את השרטוט, נשווה $y' = k$ עבור קבועים שונים (כמו $k=1, -1$). זה נותן לנו עקומות גיאומטריות שעליהן השיפוע של הפתרון הוא תמיד בדיוק $k$.</p>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">בדיקת קעירות (אופציונלי)</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">כדי לדייק בשרטוט, גוזרים פעם שנייה בנגזרת סתומה: $y'' = f_x + f_y \cdot y'$. משווים לאפס למציאת קווי פיתול, ובודקים סימן לקביעת קעירות.</p>
                     </div>
                 </div>
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-amber-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">4</div>
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-red-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">4</div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">שילוב והתנהגות אסימפטוטית</h4>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">נסמן כיווני זרימה במרחב לפי השלבים הקודמים. נבדוק גבולות (מה קורה כש-$x \to \pm\infty$ או כש-$y \to \pm\infty$) ונשרטט מסלולי פתרון מייצגים שלא חוצים זה את זה.</p>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">שרטוט המסלול מתנאי ההתחלה</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">מציבים את תנאי ההתחלה $(x_0, y_0)$ ומציירים את העקומה עם כיוון החצים. חשוב לזכור: מסלולים לרוב לא נחתכים אחד עם השני (עקב משפט קיום ויחידות).</p>
                     </div>
                 </div>
             </div>
@@ -583,6 +604,24 @@
             <p class="text-lg text-slate-600 dark:text-slate-400">
                 פרק זה מסודר לפי שלבי פתרון משוואות לינאריות מסדר עליון: החל מהבסיס התיאורטי והורדת סדר, דרך מציאת פתרון הומוגני, ועד לטכניקות למציאת הפתרון הפרטי עבור משוואות אי-הומוגניות.
             </p>
+            
+            <!-- Accordion Legend -->
+            <div class="mt-4 border border-blue-200 dark:border-blue-800 rounded-lg overflow-hidden">
+                <button onclick="toggleAccordion('legend-higher-order')" class="w-full bg-blue-50 dark:bg-slate-800 p-3 text-right flex justify-between items-center font-bold text-blue-800 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-slate-700 transition-colors focus:outline-none">
+                    <span>📖 מקרא סימונים לפרק זה</span>
+                    <svg id="icon-legend-higher-order" class="w-5 h-5 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="legend-higher-order" class="accordion-content bg-white dark:bg-slate-900 px-4 py-2 border-t border-blue-100 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300">
+                    <ul class="list-disc list-inside space-y-1 mt-2 mb-2">
+                        <li><strong>$y_h(x)$ (פתרון הומוגני):</strong> הפתרון של המשוואה כאשר אגף ימין שווה לאפס ($f(x)=0$). מכיל קבועים שרירותיים $C_1, C_2...$</li>
+                        <li><strong>$y_p(x)$ (פתרון פרטי):</strong> פתרון ספציפי כלשהו למשוואה האי-הומוגנית (כאשר $f(x) \neq 0$). לא מכיל קבועים שרירותיים.</li>
+                        <li><strong>$y_1, y_2$ (פתרונות בסיס):</strong> פתרונות בלתי תלויים של המשוואה ההומוגנית.</li>
+                        <li><strong>$W(x)$ (ורונסקיאן):</strong> דטרמיננטה המורכבת מפתרונות הבסיס ונגזרותיהם. בודקת תלות לינארית.</li>
+                        <li><strong>$r$ (או $Z$):</strong> שורשים של הפולינום האופייני (משוואה אלגברית).</li>
+                        <li><strong>$f(x)$ או $q(x)$:</strong> אגף ימין של המשוואה הדיפרנציאלית (פונקציית ה"עירור" או ה"כוח").</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <!-- Flowchart -->
@@ -621,6 +660,31 @@
             <span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-1 rounded">1</span>
             תלות לינארית ומציאת פתרון שני
         </h3>
+        
+        <!-- VISUAL EXPLANATION: How to build the Wronskian -->
+        <div class="bg-sky-50 dark:bg-sky-900/20 border-r-4 border-sky-500 p-4 rounded-l-lg mb-6 shadow-sm">
+            <h4 class="font-bold text-sky-900 dark:text-sky-300 mb-2 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                איך בונים את מטריצת הוורונסקיאן?
+            </h4>
+            <p class="text-sm text-sky-800 dark:text-sky-200 mb-2">
+                הרבה סטודנטים מתבלבלים בסדר ההצבה. הוורונסקיאן הוא דטרמיננטה שבנויה מפתרונות הבסיס והנגזרות שלהם.
+                הכלל פשוט: <strong class="font-black underline">כל פונקציה מקבלת עמודה משלה</strong>, ו<strong class="font-black underline">כל שורה יורדת בדרגת גזירה</strong>.
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-center mt-3">
+                <div class="bg-white dark:bg-slate-800 p-3 rounded shadow text-center text-sm border border-sky-200 dark:border-sky-800">
+                    <span class="block font-bold text-sky-700 dark:text-sky-400 mb-1">עבור 2 פתרונות ($y_1, y_2$):</span>
+                    $$W = \det \begin{pmatrix} y_1 & y_2 \\ y_1' & y_2' \end{pmatrix}$$
+                </div>
+                <div class="hidden md:block text-2xl text-sky-400">➜</div>
+                <div class="bg-white dark:bg-slate-800 p-3 rounded shadow text-center text-sm border border-sky-200 dark:border-sky-800">
+                    <span class="block font-bold text-sky-700 dark:text-sky-400 mb-1">עבור 3 פתרונות ($y_1, y_2, y_3$):</span>
+                    $$W = \det \begin{pmatrix} y_1 & y_2 & y_3 \\ y_1' & y_2' & y_3' \\ y_1'' & y_2'' & y_3'' \end{pmatrix}$$
+                </div>
+            </div>
+            <p class="text-xs text-sky-700 dark:text-sky-300 mt-3 text-center">אם $W \neq 0$ בנקודה אחת, הפתרונות הם בלתי תלויים לינארית (מהווים בסיס).</p>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
                 <h4 class="text-lg font-bold text-blue-700 dark:text-blue-400 mb-2">הוורונסקיאן ונוסחת אבל</h4>
@@ -788,10 +852,10 @@
         <div class="bg-slate-100 dark:bg-slate-800/80 rounded-xl shadow-sm p-6 border border-slate-300 dark:border-slate-600 transition-colors border-dashed">
             <div class="flex items-center gap-2 mb-2">
                 <h4 class="text-lg font-bold text-slate-700 dark:text-slate-300">ג': שיטת האופרטור של קושי (Cauchy)</h4>
-                <span class="text-xs bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 px-2 py-1 rounded">שיטה חלופית ונחמדה</span>
+                <span class="text-xs bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 px-2 py-1 rounded">שיטה חלופית (לא חובה)</span>
             </div>
             <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                לרוב אפשר להסתדר עם ניחוש או וריאציית פרמטרים, אבל שיטת האופרטור $P(D)$ מספקת קיצורי דרך אלגבריים מעולים. הרעיון הוא לסמן נגזרת כ-$D$, ואז לחשב את $y_p = \frac{1}{P(D)}[f(x)]$.
+                למרות שלרוב מסתדרים עם השוואת מקדמים או וריאציית פרמטרים, שיטת קושי נלמדת כקיצור דרך אלגברי לפונקציות עירור מיוחדות. מסמנים נגזרת כ-$D$, ואז מחשבים $y_p = \frac{1}{P(D)}[f(x)]$.
             </p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-white dark:bg-slate-900 p-3 rounded shadow-sm text-sm text-slate-800 dark:text-slate-200">
@@ -822,6 +886,25 @@
             <p class="text-lg text-slate-600 dark:text-slate-400">
                 נושא זה עוסק בפתרון מערכות לינאריות מסדר ראשון מהצורה $\vec{x}' = A\vec{x} + \vec{b}(t)$. נלמד כיצד למצוא פתרון כללי בעזרת ערכים עצמיים, לבנות מטריצה יסודית, ולסווג את יציבות המערכת (תמונות פאזה).
             </p>
+            
+            <!-- Accordion Legend -->
+            <div class="mt-4 border border-blue-200 dark:border-blue-800 rounded-lg overflow-hidden">
+                <button onclick="toggleAccordion('legend-systems')" class="w-full bg-blue-50 dark:bg-slate-800 p-3 text-right flex justify-between items-center font-bold text-blue-800 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-slate-700 transition-colors focus:outline-none">
+                    <span>📖 מקרא סימונים לפרק זה</span>
+                    <svg id="icon-legend-systems" class="w-5 h-5 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="legend-systems" class="accordion-content bg-white dark:bg-slate-900 px-4 py-2 border-t border-blue-100 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300">
+                    <ul class="list-disc list-inside space-y-1 mt-2 mb-2">
+                        <li><strong>$\vec{x}$ או $X$:</strong> וקטור הפונקציות הנעלמות (לרוב $\begin{pmatrix} x_1(t) \\ x_2(t) \end{pmatrix}$).</li>
+                        <li><strong>$A$:</strong> מטריצת המקדמים (הקבועים) של המערכת.</li>
+                        <li><strong>$\lambda$:</strong> ערך עצמי (ע"ע) של המטריצה $A$.</li>
+                        <li><strong>$\vec{v}$:</strong> וקטור עצמי (ו"ע) שמתאים לערך עצמי מסוים.</li>
+                        <li><strong>$\Phi(t)$ (מטריצה יסודית):</strong> מטריצה שעמודותיה הן פתרונות בסיס בלתי תלויים של המערכת ההומוגנית.</li>
+                        <li><strong>$\vec{b}(t)$:</strong> וקטור האילוץ/העירור למערכת אי-הומוגנית.</li>
+                        <li><strong>$\vec{x}_p(t)$:</strong> וקטור שהוא פתרון פרטי למערכת אי-הומוגנית (ללא קבועים שרירותיים).</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div class="bg-blue-50 dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-blue-200 dark:border-slate-700 mb-8 transition-colors duration-300">
@@ -884,7 +967,17 @@
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors flex flex-col justify-between">
                 <div>
                     <h3 class="text-xl font-bold text-purple-800 dark:text-purple-400 mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">המטריצה היסודית וחישוב ההופכית</h3>
-                    <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">המטריצה $\Phi(t)$ מורכבת מפתרונות הבסיס כעמודות. הדטרמיננטה שלה היא ה<strong>ורונסקיאן</strong> של המערכת, והיא תמיד שונה מאפס אם הפתרונות בת"ל.</p>
+                    
+                    <!-- VISUAL EXPLANATION: How to build Fundamental Matrix -->
+                    <div class="bg-purple-50 dark:bg-purple-900/20 border-r-4 border-purple-500 p-3 rounded-l-lg mb-3 shadow-sm">
+                        <p class="text-xs text-purple-800 dark:text-purple-200 mb-2 font-bold">איך מסדרים את $\Phi(t)$?</p>
+                        <p class="text-xs text-purple-700 dark:text-purple-300">כל פתרון בסיס $\vec{x}_i(t)$ נכנס כ<strong>עמודה</strong> שלמה במטריצה. (הוורונסקיאן של המערכת הוא $\det(\Phi(t))$).</p>
+                        <div class="text-center text-xs font-mono mt-2 text-slate-800 dark:text-slate-300">
+                            $\Phi(t) = \left[ \begin{array}{c|c} \\ \vec{x}_1(t) & \vec{x}_2(t) \\ \\ \end{array} \right]$
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">אם $\det(\Phi) \neq 0$ לכל $t$, הפתרונות מהווים בסיס.</p>
                     <div class="bg-purple-50 dark:bg-purple-900/20 p-3 rounded border border-purple-200 dark:border-purple-800 text-slate-800 dark:text-slate-200 mb-4 text-sm">
                         <p class="font-bold text-purple-700 dark:text-purple-300 mb-1">נוסחת וריאציית הפרמטרים למערכות:</p>
                         $$\vec{x}_p(t) = \Phi(t) \int \Phi^{-1}(t)\vec{b}(t) dt$$
@@ -938,12 +1031,30 @@
 
     <!-- Sturm Liouville Tab -->
     <section id="sturm" class="section-content">
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-2">בעיות שטורם-ליוביל (Sturm-Liouville)</h2>
+        <div class="mb-8 border-b border-slate-200 dark:border-slate-700 pb-4">
+            <h2 class="text-3xl font-extrabold text-blue-800 dark:text-blue-400 mb-2">בעיות שטורם-ליוביל (Sturm-Liouville)</h2>
             <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
                 הבעיה עוסקת במציאת "ערכים עצמיים" $\lambda$ שרק עבורם קיים פתרון לא טריוויאלי למד״ר מסדר שני עם תנאי שפה ספציפיים. בנוסף לחישוב הטכני, נושא זה גדוש במשפטים תיאורטיים למבחן.
             </p>
+            
+            <!-- Accordion Legend -->
+            <div class="mt-4 border border-blue-200 dark:border-blue-800 rounded-lg overflow-hidden">
+                <button onclick="toggleAccordion('legend-sturm')" class="w-full bg-blue-50 dark:bg-slate-800 p-3 text-right flex justify-between items-center font-bold text-blue-800 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-slate-700 transition-colors focus:outline-none">
+                    <span>📖 מקרא סימונים לפרק זה</span>
+                    <svg id="icon-legend-sturm" class="w-5 h-5 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="legend-sturm" class="accordion-content bg-white dark:bg-slate-900 px-4 py-2 border-t border-blue-100 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300">
+                    <ul class="list-disc list-inside space-y-1 mt-2 mb-2">
+                        <li><strong>$\lambda$ (ערך עצמי):</strong> קבוע שעבורו למשוואה יש פתרון שונה מאפס המקיים את תנאי השפה. מסודרים כ-$\lambda_1 < \lambda_2 < \dots$</li>
+                        <li><strong>$y_n(x)$ (פונקציה עצמית):</strong> הפתרון הלא-טריוויאלי המתאים לערך העצמי $\lambda_n$.</li>
+                        <li><strong>$r(x)$ (פונקציית משקל):</strong> פונקציה חיובית המשמשת להגדרת האורתוגונליות בין הפונקציות העצמיות, ונמצאת באגף ימין של הצורה הסטנדרטית (מוכפלת ב-$\lambda$).</li>
+                        <li><strong>$p(x), q(x)$:</strong> הפונקציות המגדירות את האופרטור הדיפרנציאלי בצורה הסטנדרטית $-(py')' + qy$.</li>
+                        <li><strong>אורתוגונליות (ניצבות):</strong> תכונה שבה האינטגרל של מכפלת שתי פונקציות עצמיות שונות ופונקציית המשקל נותן אפס.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
                 <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">מציאת פונקציית המשקל $r(x)$</h3>
@@ -1063,9 +1174,9 @@
                 </button>
                 <div id="aiQuizResult" class="mt-6 hidden">
                     <div id="aiLoading2" class="flex justify-center items-center space-x-2 space-x-reverse text-blue-600 dark:text-blue-400 mb-4 hidden"><span>בונה שאלה מאתגרת...</span></div>
-                    <div id="aiQuizQuestion" class="bg-white dark:bg-slate-800 p-4 rounded border border-blue-100 dark:border-slate-700 text-sm leading-relaxed whitespace-pre-wrap font-semibold mb-4 text-slate-800 dark:text-slate-200"></div>
+                    <div id="aiQuizQuestion" class="bg-blue-50 dark:bg-slate-900 p-4 rounded-lg border border-blue-200 dark:border-slate-600 text-sm leading-relaxed whitespace-pre-wrap font-semibold mb-4 text-slate-800 dark:text-slate-200"></div>
                     <button id="showAnswerBtn" onclick="toggleAnswer()" class="hidden text-sm text-blue-600 dark:text-blue-400 underline font-bold hover:text-blue-800 dark:hover:text-blue-200">הראה פתרון מלא</button>
-                    <div id="aiQuizAnswer" class="mt-4 bg-emerald-50 dark:bg-emerald-900/30 p-4 rounded border border-emerald-200 dark:border-emerald-800 text-sm leading-relaxed whitespace-pre-wrap hidden text-slate-800 dark:text-slate-200"></div>
+                    <div id="aiQuizAnswer" class="mt-4 bg-emerald-50 dark:bg-emerald-900/30 p-4 rounded-lg border border-emerald-200 dark:border-emerald-800 text-sm leading-relaxed whitespace-pre-wrap hidden text-slate-800 dark:text-slate-200"></div>
                 </div>
             </div>
         </div>
@@ -1090,6 +1201,15 @@
 </footer>
 
 <script>
+    // --- Accordion Logic ---
+    function toggleAccordion(id) {
+        const content = document.getElementById(id);
+        const icon = document.getElementById('icon-' + id);
+        if(!content || !icon) return;
+        content.classList.toggle('expanded');
+        icon.classList.toggle('rotated');
+    }
+
     // --- Dark Mode Toggle ---
     function toggleDarkMode() {
         document.documentElement.classList.toggle('dark');
@@ -1099,20 +1219,25 @@
         if (window.phaseChartInstance) {
             updatePhaseChart();
         }
-        if (document.getElementById('fields').classList.contains('active')) {
+        
+        const fieldsSection = document.getElementById('fields');
+        if (fieldsSection && fieldsSection.classList.contains('active')) {
             drawSlopeField();
         }
     }
 
     // --- Navigation ---
     function switchTab(tabId) {
-        document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('nav-active'));
+        const targetSection = document.getElementById(tabId);
+        if (!targetSection) return; // Prevent null error
         
+        document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+        targetSection.classList.add('active');
+        
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('nav-active'));
         const allButtons = document.querySelectorAll('.nav-btn');
         allButtons.forEach(btn => {
-            if(btn.getAttribute('onclick').includes(`'${tabId}'`)) {
+            if(btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${tabId}'`)) {
                 btn.classList.add('nav-active');
             }
         });
@@ -1150,9 +1275,12 @@
 
     document.addEventListener("DOMContentLoaded", () => {
         if (getStoredApiKey()) {
-            document.getElementById('apiKeyStatus').innerText = "מפתח AI קיים ושמור במערכת.";
-            document.getElementById('apiKeyStatus').className = "mt-3 text-sm font-semibold text-emerald-600 dark:text-emerald-400";
-            document.getElementById('apiKeyStatus').classList.remove('hidden');
+            const statusEl = document.getElementById('apiKeyStatus');
+            if(statusEl) {
+                statusEl.innerText = "מפתח AI קיים ושמור במערכת.";
+                statusEl.className = "mt-3 text-sm font-semibold text-emerald-600 dark:text-emerald-400";
+                statusEl.classList.remove('hidden');
+            }
         }
     });
 
@@ -1193,7 +1321,9 @@
     let phaseChartInstance = null;
     function initPhaseChart() { updatePhaseChart(); }
     function updatePhaseChart() {
-        const type = document.getElementById('phaseType') ? document.getElementById('phaseType').value : 'spiral-in';
+        const phaseTypeEl = document.getElementById('phaseType');
+        if(!phaseTypeEl) return;
+        const type = phaseTypeEl.value || 'spiral-in';
         const canvas = document.getElementById('phaseChart');
         if(!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -1259,6 +1389,7 @@
     function toggleCustomEq() {
         const selectVal = document.getElementById('slopeEquation').value;
         const customContainer = document.getElementById('customEqContainer');
+        if(!customContainer) return;
         if (selectVal === 'custom') { customContainer.classList.remove('hidden'); } else { customContainer.classList.add('hidden'); }
         initSlopeField();
     }
@@ -1320,7 +1451,8 @@
         sfCtx.strokeStyle = axisColor; sfCtx.lineWidth = 2; let origin = mathToPx(0, 0); sfCtx.beginPath();
         sfCtx.moveTo(origin.x, 0); sfCtx.lineTo(origin.x, sfHeight); sfCtx.moveTo(0, origin.y); sfCtx.lineTo(sfWidth, origin.y); sfCtx.stroke();
 
-        const eq = document.getElementById('slopeEquation').value;
+        const eqEl = document.getElementById('slopeEquation');
+        const eq = eqEl ? eqEl.value : 'y-x';
         const dx = (mathMaxX - mathMinX) / 20; const dy = (mathMaxY - mathMinY) / 15;
         sfCtx.lineWidth = 1.5; sfCtx.strokeStyle = vecColor; 
         for (let mx = mathMinX + dx/2; mx <= mathMaxX; mx += dx) {
@@ -1346,7 +1478,8 @@
     }
 
     function calculateTrajectory(startX, startY) {
-        const eq = document.getElementById('slopeEquation').value;
+        const eqEl = document.getElementById('slopeEquation');
+        const eq = eqEl ? eqEl.value : 'y-x';
         const h = 0.05; const colors = ['#e11d48', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
         const myColor = colors[currentTrajectories.length % colors.length];
         
@@ -1365,7 +1498,7 @@
         currentTrajectories.push({ startX: startX, startY: startY, points: backwardPts.concat(forwardPts), color: myColor });
     }
 
-    // --- Gemini API Setup (Fallback to strict Fetch) ---
+    // --- Gemini API Setup (Strict Fetch) ---
     async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
         const apiKey = getStoredApiKey()?.trim();
         if (!apiKey) {
@@ -1424,7 +1557,7 @@
     async function analyzeEquation() {
         if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); return; }
         const inputEl = document.getElementById('aiEqInput');
-        if(!inputEl.value.trim()) return;
+        if(!inputEl || !inputEl.value.trim()) return;
         document.getElementById('aiAnalysisResult').classList.remove('hidden');
         document.getElementById('aiLoading1').classList.remove('hidden');
         document.getElementById('aiAnalysisContent').innerHTML = '';
