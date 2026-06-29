@@ -6,7 +6,6 @@
     <title>המד״רון - מדריך המד״ר הגדול 104136</title>
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind config for Dark Mode -->
     <script>
         tailwind.config = {
             darkMode: 'class'
@@ -35,6 +34,18 @@
         .slope-canvas-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; }
         #slopeFieldCanvas { border-radius: 0.5rem; width: 100%; height: auto; cursor: crosshair; transition: border-color 0.3s ease; }
         #phaseChart { width: 100% !important; height: 100% !important; }
+        
+        /* Table styling for better readability */
+        .styled-table { border-collapse: collapse; margin: 20px 0; font-size: 0.9em; min-width: 400px; width: 100%; box-shadow: 0 0 20px rgba(0, 0, 0, 0.05); }
+        .styled-table thead tr { background-color: #1e40af; color: #ffffff; text-align: right; }
+        .dark .styled-table thead tr { background-color: #1e293b; color: #cbd5e1; }
+        .styled-table th, .styled-table td { padding: 12px 15px; }
+        .styled-table tbody tr { border-bottom: 1px solid #dddddd; }
+        .dark .styled-table tbody tr { border-bottom: 1px solid #334155; }
+        .styled-table tbody tr:nth-of-type(even) { background-color: #f3f4f6; }
+        .dark .styled-table tbody tr:nth-of-type(even) { background-color: #0f172a; }
+        .styled-table tbody tr:last-of-type { border-bottom: 2px solid #1e40af; }
+        .dark .styled-table tbody tr:last-of-type { border-bottom: 2px solid #3b82f6; }
     </style>
 </head>
 <body class="text-slate-800 bg-slate-50 dark:bg-slate-900 dark:text-slate-200 antialiased overflow-x-hidden">
@@ -52,10 +63,10 @@
         </div>
         <nav class="flex space-x-reverse space-x-6 overflow-x-auto pb-2 text-slate-100 dark:text-slate-300" id="main-nav">
             <button onclick="switchTab('intro')" class="nav-btn nav-active pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">מבוא ומושגים</button>
-            <button onclick="switchTab('first-order')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">סדר ראשון</button>
-            <button onclick="switchTab('higher-order')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">סדר עליון</button>
-            <button onclick="switchTab('fields')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">שדות כיוון ותפירה</button>
             <button onclick="switchTab('series')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">טורים והתכנסות</button>
+            <button onclick="switchTab('first-order')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">סדר ראשון</button>
+            <button onclick="switchTab('fields')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">שדות כיוון ותפירה</button>
+            <button onclick="switchTab('higher-order')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">סדר עליון</button>
             <button onclick="switchTab('systems')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">מערכות ופאזה</button>
             <button onclick="switchTab('sturm')" class="nav-btn pb-2 px-1 hover:text-blue-200 dark:hover:text-blue-300 transition-colors whitespace-nowrap">שטורם-ליוביל</button>
             <button onclick="switchTab('ai-assistant')" class="nav-btn pb-2 px-1 hover:text-emerald-300 dark:hover:text-emerald-400 transition-colors whitespace-nowrap flex items-center gap-1 text-emerald-100 dark:text-emerald-300 font-semibold">עוזר AI ✨</button>
@@ -65,6 +76,7 @@
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-300">
 
+    <!-- Intro Tab -->
     <section id="intro" class="section-content active">
         <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-8 border border-slate-200 dark:border-slate-700 transition-colors duration-300 mb-8">
             <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-4">ברוכים הבאים למדריך המקיף</h2>
@@ -136,335 +148,6 @@
                 <button onclick="saveApiKey()" class="w-full md:w-1/3 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded shadow transition-colors">שמור והפעל AI ✨</button>
             </div>
             <p id="apiKeyStatus" class="mt-3 text-sm font-semibold hidden"></p>
-        </div>
-    </section>
-
-    <!-- First Order Tab -->
-    <section id="first-order" class="section-content">
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-2">משוואות מסדר ראשון - תבניות וסד״פים</h2>
-            <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
-                פרק זה מרכז את כל השיטות לפתרון משוואות מהצורה $y' = f(x,y)$. המפתח כאן הוא זיהוי התבנית. לעיתים קרובות, משוואה במבחן תיראה מורכבת, אך מניפולציה אלגברית קלה תחשוף את אחת התבניות הבאות.
-            </p>
-        </div>
-
-        <div class="bg-blue-50 dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-blue-200 dark:border-slate-700 mb-8 transition-colors duration-300">
-            <h3 class="text-xl font-bold text-blue-900 dark:text-blue-300 mb-5 flex items-center gap-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                תרשים זרימה: גישה לשאלת סדר ראשון במבחן
-            </h3>
-            <div class="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-blue-200 dark:before:bg-slate-700">
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-blue-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">1</div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">האם פרידה?</h4>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">האם ניתן לסדר כ-$y' = f(x)g(y)$? אם <strong class="text-emerald-600 dark:text-emerald-400">כן</strong> $\leftarrow$ מפרידים לאגפים ומבצעים אינטגרציה.</p>
-                    </div>
-                </div>
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-emerald-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">2</div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">האם לינארית / ברנולי?</h4>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">מחפשים תבנית $y' + p(x)y = q(x)y^n$. עבור $n=0$ (לינארית) $\leftarrow$ משתמשים בגורם אינטגרציה. עבור $n \neq 0,1$ (ברנולי) $\leftarrow$ מציבים $z=y^{1-n}$.</p>
-                    </div>
-                </div>
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-amber-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">3</div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">האם מדויקת?</h4>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">מביאים לצורה $Pdx + Qdy = 0$. האם $P_y = Q_x$? אם לא, נבדוק האם קיים גורם אינטגרציה $\mu(x)$ או $\mu(y)$. מצאנו? $\leftarrow$ מוצאים פוטנציאל $U$.</p>
-                    </div>
-                </div>
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-purple-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">4</div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">הומוגנית או הצבה לינארית?</h4>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">תלויה רק ביחס $y/x$? $\leftarrow$ נציב $v=y/x$. מורכבת ממנת ישרים? $\leftarrow$ נעשה הזזת צירים לנקודת החיתוך או נציב $z=ax+by+c$.</p>
-                    </div>
-                </div>
-                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-red-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">5</div>
-                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
-                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">טריק אחרון: קשה לחלץ את $y$?</h4>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">ה-$y$ תקוע בתוך $\sin$ או במכנה אך $x$ חופשי? $\leftarrow$ נחליף תפקידים $x \leftrightarrow y$ ונפתור כמשוואה לינארית עבור $x(y)$.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">א. פרידה (Separable)</h3>
-                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $\frac{dy}{dx} = f(x)g(y)$</p>
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
-                    <ol class="list-decimal list-inside space-y-1">
-                        <li>מפרידים: $\frac{dy}{g(y)} = f(x)dx$</li>
-                        <li>אינטגרציה על שני האגפים.</li>
-                        <li class="font-bold text-red-600 dark:text-red-400">בדיקת סינגולריים ($g(y)=0$).</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ב. לינארית סדר 1</h3>
-                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $y' + p(x)y = q(x)$</p>
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
-                    <ol class="list-decimal list-inside space-y-1">
-                        <li>גורם אינטגרציה: $\mu = e^{\int p(x)dx}$</li>
-                        <li>הכפלה: $(\mu y)' = \mu q(x)$</li>
-                        <li>אינטגרציה וחילוף $y$.</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ג. ברנולי</h3>
-                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $y' + p(x)y = q(x)y^n$</p>
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
-                    <ol class="list-decimal list-inside space-y-1">
-                        <li>הצבה: $z = y^{1-n}$</li>
-                        <li>משוואה ל-$z$: $z' + (1-n)pz = (1-n)q$</li>
-                        <li>לפתור כלינארית ולחזור ל-$y$.</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ד. משוואה מדויקת</h3>
-                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $Pdx + Qdy = 0, P_y = Q_x$</p>
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
-                    <ol class="list-decimal list-inside space-y-1">
-                        <li>פוטנציאל: $U = \int P dx + h(y)$</li>
-                        <li>גוזרים: $U_y = Q$, מוצאים $h(y)$</li>
-                        <li>פתרון: $U(x,y) = C$.</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ה. משוואה הומוגנית</h3>
-                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $y' = f\left(\frac{y}{x}\right)$</p>
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
-                    <ol class="list-decimal list-inside space-y-1">
-                        <li>הצבה $v = \frac{y}{x} \Rightarrow y = vx$</li>
-                        <li>גזירה: $y' = v'x + v$</li>
-                        <li>מפרידים: $x \frac{dv}{dx} = f(v) - v$</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ו. החלפת תפקידים</h3>
-                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $y' = \frac{1}{A(y)x + B(y)}$</p>
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
-                    <ol class="list-decimal list-inside space-y-1">
-                        <li>הופכים נגזרת: $x' = \frac{dx}{dy} = \frac{1}{y'}$</li>
-                        <li>מתקבלת לינארית עבור $x(y)$.</li>
-                        <li>$x' - A(y)x = B(y)$</li>
-                    </ol>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 hover:shadow-md transition-all">
-                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ז. הצבה לינארית</h3>
-                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> מנת ישרים $y' = f\left(\frac{a_1 x+b_1 y+c_1}{a_2 x+b_2 y+c_2}\right)$</p>
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
-                    <ul class="list-disc list-inside space-y-1">
-                        <li><strong>ישרים מקבילים:</strong> נציב $z = ax+by+c$, גוזרים ל-$z'$ ומקבלים <strong>פרידה</strong>.</li>
-                        <li><strong>ישרים נחתכים:</strong> מוצאים חיתוך $(x_0,y_0)$. מציבים $u=x-x_0, v=y-y_0$. מתקבלת <strong>הומוגנית</strong>.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Higher Order Tab -->
-    <section id="higher-order" class="section-content">
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-2">משוואות מסדר שני ומעלה</h2>
-            <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
-                פרק זה עוסק במשוואות מסדר עליון. נתחיל עם השיטה הבסיסית למשוואות עם מקדמים קבועים (הומוגני + פרטי), ונמשיך לשיטות אנליטיות עמוקות יותר כמו ורונסקיאן, וריאציית הפרמטרים, והורדת סדר.
-            </p>
-        </div>
-
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 mb-8 transition-colors">
-            <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">מקדמים קבועים: הפתרון הכללי $y = y_h + y_p$</h3>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <h4 class="font-bold text-blue-700 dark:text-blue-400 mb-2">1. הפתרון ההומוגני ($y_h$)</h4>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                        מייצג את "תגובת האפס" של המערכת. פותרים ע״י פולינום אופייני.
-                    </p>
-                    <ul class="list-disc list-inside space-y-2 text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/50 p-3 rounded">
-                        <li><strong>ממשיים שונים:</strong> $C_1 e^{r_1 x} + C_2 e^{r_2 x}$</li>
-                        <li><strong>ממשי כפול ($r$):</strong> $C_1 e^{r x} + C_2 x e^{r x}$</li>
-                        <li><strong>מרוכבים ($\alpha \pm i\beta$):</strong> $e^{\alpha x} (C_1 \cos(\beta x) + C_2 \sin(\beta x))$</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold text-emerald-600 dark:text-emerald-400 mb-2">2. הפתרון הפרטי ($y_p$) - הצורה הכללית</h4>
-                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
-                        אם אגף ימין $f(x)$ מורכב מפולינומים, אקספוננטים וטריגונומטריה:
-                        $$f(x) = e^{\alpha x} \left( P_n(x) \cos(\beta x) + Q_m(x) \sin(\beta x) \right)$$
-                    </p>
-                    <div class="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded border border-emerald-200 dark:border-emerald-800/50 text-sm overflow-x-auto text-slate-800 dark:text-slate-200">
-                        <p class="font-bold mb-1">הניחוש חייב להיות:</p>
-                        $$y_p = x^s e^{\alpha x} \left( R_K(x) \cos(\beta x) + S_K(x) \sin(\beta x) \right)$$
-                        <p class="mt-2 text-slate-700 dark:text-slate-400">$K = \max(n,m)$ ו-$s$ הוא ריבוי השורש $Z=\alpha+i\beta$ בפולינום האופייני (אם לא, $s=0$).</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-lg font-bold text-blue-800 dark:text-blue-400 mb-3 border-b dark:border-slate-600 pb-2">הוורונסקיאן ונוסחת אבל</h3>
-                <p class="text-sm text-slate-700 dark:text-slate-300 mb-2">כלי לבדיקת תלות לינארית של פתרונות משוואה מהצורה $y'' + P(x)y' + Q(x)y = 0$.</p>
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-sm overflow-x-auto text-center text-slate-800 dark:text-slate-200">
-                    <p class="font-bold text-right">הגדרה:</p>
-                    $$W(y_1, y_2) = \det \begin{pmatrix} y_1 & y_2 \\ y_1' & y_2' \end{pmatrix}$$
-                    <p class="font-bold mt-2 text-right">נוסחת אבל:</p>
-                    $$W(x) = C \cdot e^{-\int P(x)dx}$$
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-lg font-bold text-blue-800 dark:text-blue-400 mb-3 border-b dark:border-slate-600 pb-2">הורדת סדר (ד׳אלמבר)</h3>
-                <p class="text-sm text-slate-700 dark:text-slate-300 mb-2">כאשר ידוע פתרון <strong>אחד</strong> ($y_1$) למד״ר מסדר שני (הומוגנית), מוצאים פתרון שני ($y_2 = v(x) \cdot y_1$).</p>
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-sm overflow-x-auto text-center text-slate-800 dark:text-slate-200">
-                    <p class="font-bold text-blue-600 dark:text-blue-400 text-right">הנוסחה המהירה:</p>
-                    $$v(x) = \int \frac{1}{y_1^2} e^{-\int P(x)dx} dx$$
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-lg font-bold text-blue-800 dark:text-blue-400 mb-3 border-b dark:border-slate-600 pb-2">וריאציית הפרמטרים</h3>
-                <p class="text-sm text-slate-700 dark:text-slate-300 mb-2">למציאת $y_p$ למד״ר $y''+Py'+Qy=f(x)$, כאשר הניחוש נכשל (למשל $\tan(x)$).</p>
-                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-sm overflow-x-auto text-center text-slate-800 dark:text-slate-200">
-                    <p class="text-right">הנוסחה באמצעות $y_1, y_2$ ו-$W$:</p>
-                    $$y_p = -y_1 \int \frac{y_2 f(x)}{W} dx + y_2 \int \frac{y_1 f(x)}{W} dx$$
-                </div>
-                <p class="text-xs text-red-600 dark:text-red-400 font-bold">חובה לתקן את המשוואה (מקדם 1 ל-$y''$) לפני זיהוי ה-$f(x)$!</p>
-            </div>
-        </div>
-
-        <div class="bg-blue-50 dark:bg-slate-800 rounded-xl shadow-md p-6 border border-blue-200 dark:border-slate-700 transition-colors">
-            <h3 class="text-xl font-bold text-blue-900 dark:text-blue-300 mb-4">אינטראקטיבי: מחולל הניחוש המהיר</h3>
-            <p class="text-sm text-blue-800 dark:text-slate-300 mb-6">מיועד למשוואות עם מקדמים קבועים בלבד. בחרו את מאפייני פונקציית העירור $f(x)$ וקבלו את צורת הניחוש.</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">מעלת הפולינום המקסימלית ב-$f(x)$</label>
-                    <select id="polyDegree" class="w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white shadow-sm p-2 border">
-                        <option value="0">קבוע (מעלה 0)</option>
-                        <option value="1">לינארי (מעלה 1)</option>
-                        <option value="2">ריבועי (מעלה 2)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">האם יש אקספוננט $e^{\alpha x}$?</label>
-                    <select id="hasExp" class="w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white shadow-sm p-2 border">
-                        <option value="no">לא ($\alpha = 0$)</option>
-                        <option value="yes">כן ($\alpha \neq 0$)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">האם יש טריגונומטריה?</label>
-                    <select id="hasTrig" class="w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white shadow-sm p-2 border">
-                        <option value="no">לא ($\beta = 0$)</option>
-                        <option value="yes">כן ($\sin/\cos$)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="mb-6 flex items-center">
-                <input type="checkbox" id="isRoot" class="h-4 w-4 text-blue-600 border-slate-300 rounded">
-                <label for="isRoot" class="ml-2 block text-sm text-slate-700 dark:text-slate-300 mr-2 font-bold">
-                    המספר המרוכב $Z = \alpha + i\beta$ הוא שורש של הפולינום האופייני ($s=1$) - מצב "תהודה"
-                </label>
-            </div>
-            <button onclick="generateGuess()" class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold py-3 px-4 rounded shadow transition-colors">ייצר תבנית ניחוש</button>
-            <div id="guessResultContainer" class="mt-6 hidden bg-white dark:bg-slate-900 p-4 rounded border border-blue-200 dark:border-slate-700">
-                <p class="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">תבנית הניחוש הנדרשת $y_p(x)$:</p>
-                <div id="guessOutput" class="text-center overflow-x-auto p-4 bg-slate-50 dark:bg-slate-800 rounded text-lg text-slate-800 dark:text-slate-100"></div>
-                <p class="mt-4 text-sm text-slate-600 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700 pt-2" id="guessExplanation"></p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Fields and Stitching Tab -->
-    <section id="fields" class="section-content">
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-2">שדות כיוון ותפירת פתרונות</h2>
-            <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
-                פרק זה משלב ראייה אנליטית עם הבנה גיאומטרית. בחצי הראשון נלמד לתפור פתרונות המוגדרים למקוטעין. בחצי השני, נצפה ב"התנהגות המרחבית" באמצעות הסימולטור.
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">סד״פ - תפירת פתרונות (Piecewise)</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">כאשר פונקציית האילוץ $f(x)$ מוגדרת למקוטעין סביב $x_0$, הפתרון הכולל חייב להיות רציף (וגזיר) בנקודת התפר.</p>
-                <div class="space-y-3 text-sm text-slate-800 dark:text-slate-200">
-                    <div class="bg-blue-50 dark:bg-slate-900/50 p-3 rounded">
-                        <span class="font-bold text-blue-800 dark:text-blue-300">שלב 1: מחלקים לתחומים.</span>
-                        פותרים בנפרד בתחום $x < x_0$ (עם קבוע $C_1$) ובתחום $x > x_0$ (עם קבוע $C_2$).
-                    </div>
-                    <div class="bg-blue-50 dark:bg-slate-900/50 p-3 rounded">
-                        <span class="font-bold text-blue-800 dark:text-blue-300">שלב 2: תנאי התחלה מוקדם.</span>
-                        משתמשים בתנאי ההתחלה כדי למצוא את הקבוע באזור המתאים (לרוב נמצא את $C_1$).
-                    </div>
-                    <div class="bg-slate-100 dark:bg-slate-700/50 p-3 rounded border border-slate-300 dark:border-slate-600 overflow-x-auto text-center">
-                        <span class="font-bold text-slate-800 dark:text-slate-100 text-right block mb-2">שלב 3: התפירה בנקודה $x_0$.</span>
-                        דורשים התלכדות גבולות (רציפות):
-                        $$\lim_{x \to x_0^-} y_1(x) = \lim_{x \to x_0^+} y_2(x)$$
-                        משוואה זו מאפשרת לחלץ את $C_2$.
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-slate-800 dark:bg-slate-900 text-white rounded-xl shadow-sm p-6 border border-slate-700 dark:border-slate-700 transition-colors">
-                <h3 class="text-xl font-bold text-blue-300 dark:text-blue-400 mb-4 border-b border-slate-600 dark:border-slate-600 pb-2">משוואות אוטונומיות ויציבות 1D</h3>
-                <p class="text-sm text-slate-300 mb-4">משוואה אוטונומית היא משוואה מסדר ראשון שבה $x$ לא מופיע מפורשות באגף ימין: $\frac{dy}{dx} = f(y)$.</p>
-                <ul class="list-disc list-inside space-y-2 text-sm text-slate-300 mb-4">
-                    <li><strong>נקודת שיווי משקל:</strong> הערכים $y=c$ עבורם $f(c)=0$. אם נתחיל שם, נישאר שם.</li>
-                    <li><strong>יציבות אסימפטוטית:</strong> נקראת יציבה (Attractor) אם כשנסטה ממנה מעט, נמשך אליה בחזרה. תנאי אנליטי: $f'(c) < 0$.</li>
-                    <li><strong>לא יציבה:</strong> הנגזרת "דוחפת" אותנו הרחק מהנקודה. תנאי: $f'(c) > 0$.</li>
-                </ul>
-                <div class="bg-slate-700 dark:bg-slate-800 p-3 rounded text-sm mt-4 border border-slate-600 dark:border-slate-600">
-                    <p class="font-bold text-blue-200 dark:text-blue-300">הקשר לשדות כיוון:</p>
-                    נסו לצייר בסימולטור את $y(1-y)$ ולחצו במקומות שונים על הגרף. תראו שכל המסלולים נשאבים לקו $y=1$ (יציב) ובורחים מהקו $y=0$ (לא יציב).
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
-            <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 text-center">מעבדת שדות כיוון אינטראקטיבית</h3>
-            
-            <div class="bg-blue-50 dark:bg-slate-900/30 p-4 rounded-lg border border-blue-200 dark:border-slate-700 mb-4">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div class="md:col-span-3">
-                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">בחר/י משוואה $y' = f(x,y)$ למידול התנהגות:</label>
-                        <select id="slopeEquation" onchange="toggleCustomEq()" class="w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white shadow-sm p-2 border text-lg" dir="ltr">
-                            <option value="y-x">y' = y - x (לינארית קלאסית)</option>
-                            <option value="y*(1-y)">y' = y(1 - y) (לוגיסטית, יציבות סביב y=1)</option>
-                            <option value="Math.sin(x)*Math.cos(y)">y' = sin(x)cos(y) (לא לינארית, מחזורית)</option>
-                            <option value="x/y">y' = x / y (פרידה, פתרונות היפרבוליים)</option>
-                            <option value="custom" class="font-bold text-blue-600 dark:text-blue-400">-- הזן/י משוואה בעצמך (Custom) --</option>
-                        </select>
-                        
-                        <div id="customEqContainer" class="hidden mt-3 p-3 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md shadow-inner">
-                            <div class="flex items-center gap-2">
-                                <span class="font-bold text-xl text-slate-700 dark:text-slate-300 font-mono" dir="ltr">y' = </span>
-                                <input type="text" id="customEqInput" class="w-full rounded border-slate-300 dark:border-slate-600 shadow-sm p-2 border bg-slate-50 dark:bg-slate-900 text-lg font-mono focus:ring-blue-500 focus:border-blue-500 dark:text-white" dir="ltr" placeholder="sin(x) * y" onkeyup="if(event.key==='Enter') initSlopeField()">
-                                <button onclick="initSlopeField()" class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow transition-colors whitespace-nowrap">עדכן משוואה</button>
-                            </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
-                                מותר להשתמש בפעולות: <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">x + y</code>, <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">x / y</code>. פונקציות: <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">sin(x)</code>, <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">exp(y)</code>. חזקה: <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">x**2</code>.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex items-start mt-6">
-                        <button onclick="clearTrajectories()" class="w-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-bold py-2 px-4 rounded shadow transition-colors h-11 border border-slate-300 dark:border-slate-600">נקה מסלולים</button>
-                    </div>
-                </div>
-            </div>
-            
-            <p class="text-sm text-center text-blue-600 dark:text-blue-400 mb-2 font-semibold animate-pulse">👈 לחצו בכל מקום על הגרף כדי להציב תנאי התחלה ולצייר את מסלול הפתרון!</p>
-            
-            <div class="slope-canvas-container rounded border border-slate-200 dark:border-slate-700 overflow-hidden shadow-inner bg-white dark:bg-[#0f172a] transition-colors">
-                <canvas id="slopeFieldCanvas" width="600" height="400" style="background: transparent;"></canvas>
-            </div>
         </div>
     </section>
 
@@ -635,7 +318,504 @@
         </div>
     </section>
 
-    <!-- Systems Tab -->
+    <!-- First Order Tab -->
+    <section id="first-order" class="section-content">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-2">משוואות מסדר ראשון - תבניות וסד״פים</h2>
+            <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
+                פרק זה מרכז את כל השיטות לפתרון משוואות מהצורה $y' = f(x,y)$. המפתח כאן הוא זיהוי התבנית. לעיתים קרובות, משוואה במבחן תיראה מורכבת, אך מניפולציה אלגברית קלה תחשוף את אחת התבניות הבאות.
+            </p>
+        </div>
+
+        <!-- Flowchart -->
+        <div class="bg-blue-50 dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-blue-200 dark:border-slate-700 mb-8 transition-colors duration-300">
+            <h3 class="text-xl font-bold text-blue-900 dark:text-blue-300 mb-5 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                תרשים זרימה: גישה לשאלת סדר ראשון במבחן
+            </h3>
+            <div class="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-blue-200 dark:before:bg-slate-700">
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-blue-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">1</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">האם פרידה?</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">האם ניתן לסדר כ-$y' = f(x)g(y)$? אם <strong class="text-emerald-600 dark:text-emerald-400">כן</strong> $\leftarrow$ מפרידים לאגפים ומבצעים אינטגרציה.</p>
+                    </div>
+                </div>
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-emerald-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">2</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">האם לינארית / ברנולי?</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">מחפשים תבנית $y' + p(x)y = q(x)y^n$. עבור $n=0$ (לינארית) $\leftarrow$ משתמשים בגורם אינטגרציה. עבור $n \neq 0,1$ (ברנולי) $\leftarrow$ מציבים $z=y^{1-n}$.</p>
+                    </div>
+                </div>
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-amber-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">3</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">האם מדויקת?</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">מביאים לצורה $Pdx + Qdy = 0$. האם $P_y = Q_x$? אם לא, נבדוק האם קיים גורם אינטגרציה $\mu(x)$ או $\mu(y)$. מצאנו? $\leftarrow$ מוצאים פוטנציאל $U$.</p>
+                    </div>
+                </div>
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-purple-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">4</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">הומוגנית או הצבה לינארית?</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">תלויה רק ביחס $y/x$? $\leftarrow$ נציב $v=y/x$. מורכבת ממנת ישרים? $\leftarrow$ נעשה הזזת צירים לנקודת החיתוך או נציב $z=ax+by+c$.</p>
+                    </div>
+                </div>
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-red-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">5</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">טריק אחרון: קשה לחלץ את $y$?</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">ה-$y$ תקוע בתוך $\sin$ או במכנה אך $x$ חופשי? $\leftarrow$ נחליף תפקידים $x \leftrightarrow y$ ונפתור כמשוואה לינארית עבור $x(y)$.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">א. פרידה (Separable)</h3>
+                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $\frac{dy}{dx} = f(x)g(y)$</p>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
+                    <ol class="list-decimal list-inside space-y-1">
+                        <li>מפרידים: $\frac{dy}{g(y)} = f(x)dx$</li>
+                        <li>אינטגרציה על שני האגפים.</li>
+                        <li class="font-bold text-red-600 dark:text-red-400">בדיקת סינגולריים ($g(y)=0$).</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ב. לינארית סדר 1</h3>
+                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $y' + p(x)y = q(x)$</p>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
+                    <ol class="list-decimal list-inside space-y-1">
+                        <li>גורם אינטגרציה: $\mu = e^{\int p(x)dx}$</li>
+                        <li>הכפלה: $(\mu y)' = \mu q(x)$</li>
+                        <li>אינטגרציה וחילוף $y$.</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ג. ברנולי</h3>
+                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $y' + p(x)y = q(x)y^n$</p>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
+                    <ol class="list-decimal list-inside space-y-1">
+                        <li>הצבה: $z = y^{1-n}$</li>
+                        <li>משוואה ל-$z$: $z' + (1-n)pz = (1-n)q$</li>
+                        <li>לפתור כלינארית ולחזור ל-$y$.</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ד. משוואה מדויקת</h3>
+                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $Pdx + Qdy = 0, P_y = Q_x$</p>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
+                    <ol class="list-decimal list-inside space-y-1">
+                        <li>פוטנציאל: $U = \int P dx + h(y)$</li>
+                        <li>גוזרים: $U_y = Q$, מוצאים $h(y)$</li>
+                        <li>פתרון: $U(x,y) = C$.</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ה. משוואה הומוגנית</h3>
+                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $y' = f\left(\frac{y}{x}\right)$</p>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
+                    <ol class="list-decimal list-inside space-y-1">
+                        <li>הצבה $v = \frac{y}{x} \Rightarrow y = vx$</li>
+                        <li>גזירה: $y' = v'x + v$</li>
+                        <li>מפרידים: $x \frac{dv}{dx} = f(v) - v$</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ו. החלפת תפקידים</h3>
+                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> $y' = \frac{1}{A(y)x + B(y)}$</p>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
+                    <ol class="list-decimal list-inside space-y-1">
+                        <li>הופכים נגזרת: $x' = \frac{dx}{dy} = \frac{1}{y'}$</li>
+                        <li>מתקבלת לינארית עבור $x(y)$.</li>
+                        <li>$x' - A(y)x = B(y)$</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 hover:shadow-md transition-all">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">ז. הצבה לינארית</h3>
+                <p class="text-sm mb-2 text-slate-700 dark:text-slate-300"><strong>תבנית:</strong> מנת ישרים $y' = f\left(\frac{a_1 x+b_1 y+c_1}{a_2 x+b_2 y+c_2}\right)$</p>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-xs text-slate-700 dark:text-slate-300">
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>ישרים מקבילים:</strong> נציב $z = ax+by+c$, גוזרים ל-$z'$ ומקבלים <strong>פרידה</strong>.</li>
+                        <li><strong>ישרים נחתכים:</strong> מוצאים חיתוך $(x_0,y_0)$. מציבים $u=x-x_0, v=y-y_0$. מתקבלת <strong>הומוגנית</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fields and Stitching Tab -->
+    <section id="fields" class="section-content">
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-2">שדות כיוון ותפירת פתרונות</h2>
+            <p class="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
+                פרק זה משלב ראייה אנליטית עם הבנה גיאומטרית. מציאת נולקלינות, תחומי עלייה וירידה, תפירת פתרונות המוגדרים למקוטעין, ושרטוט.
+            </p>
+        </div>
+
+        <!-- Flowchart: Direction Fields -->
+        <div class="bg-blue-50 dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-blue-200 dark:border-slate-700 mb-8 transition-colors duration-300">
+            <h3 class="text-xl font-bold text-blue-900 dark:text-blue-300 mb-5 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                תרשים זרימה: סד״פ שרטוט שדות כיוון באופן ידני
+            </h3>
+            <div class="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-blue-200 dark:before:bg-slate-700">
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-blue-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">1</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">מציאת נולקלינות (Nullclines)</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">נשווה את הנגזרת לאפס: <strong class="text-blue-600 dark:text-blue-400">$y' = f(x,y) = 0$</strong>. העקומות שנקבל הן המקומות בהם שיפוע הפתרון הוא אופקי לחלוטין (מציירים עליהן חצים אופקיים).</p>
+                    </div>
+                </div>
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-emerald-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">2</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">תחומי עלייה וירידה</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">נבדוק באזורים שבין הנולקלינות (ע"י בחירת נקודות בוחן): האם <strong class="text-emerald-600 dark:text-emerald-400">$y' > 0$</strong> (הפתרון עולה באזור זה $\nearrow$) או <strong class="text-emerald-600 dark:text-emerald-400">$y' < 0$</strong> (הפתרון יורד $\searrow$).</p>
+                    </div>
+                </div>
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-purple-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">3</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">איזוקלינות כלליות (אופציונלי)</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">כדי לדייק את השרטוט, נשווה $y' = k$ עבור קבועים שונים (כמו $k=1, -1$). זה נותן לנו עקומות גיאומטריות שעליהן השיפוע של הפתרון הוא תמיד בדיוק $k$.</p>
+                    </div>
+                </div>
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-amber-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">4</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">שילוב והתנהגות אסימפטוטית</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">נסמן כיווני זרימה במרחב לפי השלבים הקודמים. נבדוק גבולות (מה קורה כש-$x \to \pm\infty$ או כש-$y \to \pm\infty$) ונשרטט מסלולי פתרון מייצגים שלא חוצים זה את זה.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">סד״פ - תפירת פתרונות (Piecewise)</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">כאשר פונקציית האילוץ $f(x)$ מוגדרת למקוטעין סביב $x_0$, הפתרון הכולל חייב להיות רציף (וגזיר) בנקודת התפר.</p>
+                <div class="space-y-3 text-sm text-slate-800 dark:text-slate-200">
+                    <div class="bg-blue-50 dark:bg-slate-900/50 p-3 rounded">
+                        <span class="font-bold text-blue-800 dark:text-blue-300">שלב 1: מחלקים לתחומים.</span>
+                        פותרים בנפרד בתחום $x < x_0$ (עם קבוע $C_1$) ובתחום $x > x_0$ (עם קבוע $C_2$).
+                    </div>
+                    <div class="bg-blue-50 dark:bg-slate-900/50 p-3 rounded">
+                        <span class="font-bold text-blue-800 dark:text-blue-300">שלב 2: תנאי התחלה מוקדם.</span>
+                        משתמשים בתנאי ההתחלה כדי למצוא את הקבוע באזור המתאים (לרוב נמצא את $C_1$).
+                    </div>
+                    <div class="bg-slate-100 dark:bg-slate-700/50 p-3 rounded border border-slate-300 dark:border-slate-600 overflow-x-auto text-center">
+                        <span class="font-bold text-slate-800 dark:text-slate-100 text-right block mb-2">שלב 3: התפירה בנקודה $x_0$.</span>
+                        דורשים התלכדות גבולות (רציפות):
+                        $$\lim_{x \to x_0^-} y_1(x) = \lim_{x \to x_0^+} y_2(x)$$
+                        משוואה זו מאפשרת לחלץ את $C_2$.
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 dark:bg-slate-900 text-white rounded-xl shadow-sm p-6 border border-slate-700 dark:border-slate-700 transition-colors">
+                <h3 class="text-xl font-bold text-blue-300 dark:text-blue-400 mb-4 border-b border-slate-600 dark:border-slate-600 pb-2">משוואות אוטונומיות ויציבות 1D</h3>
+                <p class="text-sm text-slate-300 mb-4">משוואה אוטונומית היא משוואה מסדר ראשון שבה $x$ לא מופיע מפורשות באגף ימין: $\frac{dy}{dx} = f(y)$.</p>
+                <ul class="list-disc list-inside space-y-2 text-sm text-slate-300 mb-4">
+                    <li><strong>נקודת שיווי משקל:</strong> הערכים $y=c$ עבורם $f(c)=0$. אם נתחיל שם, נישאר שם.</li>
+                    <li><strong>יציבות אסימפטוטית:</strong> נקראת יציבה (Attractor) אם כשנסטה ממנה מעט, נמשך אליה בחזרה. תנאי אנליטי: $f'(c) < 0$.</li>
+                    <li><strong>לא יציבה:</strong> הנגזרת "דוחפת" אותנו הרחק מהנקודה. תנאי: $f'(c) > 0$.</li>
+                </ul>
+                <div class="bg-slate-700 dark:bg-slate-800 p-3 rounded text-sm mt-4 border border-slate-600 dark:border-slate-600">
+                    <p class="font-bold text-blue-200 dark:text-blue-300">הקשר לשדות כיוון:</p>
+                    נסו לצייר בסימולטור את $y(1-y)$ ולחצו במקומות שונים על הגרף. תראו שכל המסלולים נשאבים לקו $y=1$ (יציב) ובורחים מהקו $y=0$ (לא יציב).
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
+            <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 text-center">מעבדת שדות כיוון אינטראקטיבית</h3>
+            
+            <div class="bg-blue-50 dark:bg-slate-900/30 p-4 rounded-lg border border-blue-200 dark:border-slate-700 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="md:col-span-3">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">בחר/י משוואה $y' = f(x,y)$ למידול התנהגות:</label>
+                        <select id="slopeEquation" onchange="toggleCustomEq()" class="w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white shadow-sm p-2 border text-lg" dir="ltr">
+                            <option value="y-x">y' = y - x (לינארית קלאסית)</option>
+                            <option value="y*(1-y)">y' = y(1 - y) (לוגיסטית, יציבות סביב y=1)</option>
+                            <option value="Math.sin(x)*Math.cos(y)">y' = sin(x)cos(y) (לא לינארית, מחזורית)</option>
+                            <option value="x/y">y' = x / y (פרידה, פתרונות היפרבוליים)</option>
+                            <option value="custom" class="font-bold text-blue-600 dark:text-blue-400">-- הזן/י משוואה בעצמך (Custom) --</option>
+                        </select>
+                        
+                        <div id="customEqContainer" class="hidden mt-3 p-3 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md shadow-inner">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-xl text-slate-700 dark:text-slate-300 font-mono" dir="ltr">y' = </span>
+                                <input type="text" id="customEqInput" class="w-full rounded border-slate-300 dark:border-slate-600 shadow-sm p-2 border bg-slate-50 dark:bg-slate-900 text-lg font-mono focus:ring-blue-500 focus:border-blue-500 dark:text-white" dir="ltr" placeholder="sin(x) * y" onkeyup="if(event.key==='Enter') initSlopeField()">
+                                <button onclick="initSlopeField()" class="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow transition-colors whitespace-nowrap">עדכן משוואה</button>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                                מותר להשתמש בפעולות: <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">x + y</code>, <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">x / y</code>. פונקציות: <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">sin(x)</code>, <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">exp(y)</code>. חזקה: <code class="bg-slate-100 dark:bg-slate-700 px-1 rounded">x**2</code>.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start mt-6">
+                        <button onclick="clearTrajectories()" class="w-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-bold py-2 px-4 rounded shadow transition-colors h-11 border border-slate-300 dark:border-slate-600">נקה מסלולים</button>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-sm text-center text-blue-600 dark:text-blue-400 mb-2 font-semibold animate-pulse">👈 לחצו בכל מקום על הגרף כדי להציב תנאי התחלה ולצייר את מסלול הפתרון!</p>
+            
+            <div class="slope-canvas-container rounded border border-slate-200 dark:border-slate-700 overflow-hidden shadow-inner bg-white dark:bg-[#0f172a] transition-colors">
+                <canvas id="slopeFieldCanvas" width="600" height="400" style="background: transparent;"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Higher Order Tab (RENOVATED) -->
+    <section id="higher-order" class="section-content">
+        <div class="mb-8 border-b border-slate-200 dark:border-slate-700 pb-4">
+            <h2 class="text-3xl font-extrabold text-blue-800 dark:text-blue-400 mb-2">משוואות מסדר עליון (2 ומעלה)</h2>
+            <p class="text-lg text-slate-600 dark:text-slate-400">
+                פרק זה מסודר לפי שלבי פתרון משוואות לינאריות מסדר עליון: החל מהבסיס התיאורטי והורדת סדר, דרך מציאת פתרון הומוגני, ועד לטכניקות למציאת הפתרון הפרטי עבור משוואות אי-הומוגניות.
+            </p>
+        </div>
+
+        <!-- Flowchart -->
+        <div class="bg-blue-50 dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-blue-200 dark:border-slate-700 mb-8 transition-colors duration-300">
+            <h3 class="text-xl font-bold text-blue-900 dark:text-blue-300 mb-5 flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                תרשים זרימה: סדר פעולות במד״ר סדר עליון
+            </h3>
+            <div class="space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-blue-200 dark:before:bg-slate-700">
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-blue-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">1</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">בדיקת תלות (ורונסקיאן) / הורדת סדר</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">אם ידוע פתרון אחד למד״ר הומוגנית, נשתמש ב<strong class="text-blue-600 dark:text-blue-400">נוסחת ד׳אלמבר</strong> למציאת הפתרון השני. כדי לבדוק תלות לינארית, נשתמש ב<strong class="text-blue-600 dark:text-blue-400">ורונסקיאן ונוסחת אבל</strong>.</p>
+                    </div>
+                </div>
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-emerald-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">2</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">מציאת הפתרון ההומוגני ($y_h$)</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">מקדמים קבועים? $\leftarrow$ נשתמש ב<strong class="text-emerald-600 dark:text-emerald-400">פולינום אופייני</strong>. מקדמים מהצורה $ax^n$? $\leftarrow$ נזהה כ<strong class="text-emerald-600 dark:text-emerald-400">משוואת אוילר</strong> ונמיר למקדמים קבועים.</p>
+                    </div>
+                </div>
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 bg-purple-500 text-white font-bold shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors">3</div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white dark:bg-slate-900 p-4 rounded-lg shadow-sm border border-slate-200 dark:border-slate-600 relative transition-colors">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-lg">מציאת הפתרון הפרטי ($y_p$)</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">פונקציית עירור \"יפה\" (אקספוננט/פולינום/סינוס)? $\leftarrow$ <strong class="text-purple-600 dark:text-purple-400">שיטת הניחוש</strong> או קושי. פונקציה מסובכת או מקדמים משתנים? $\leftarrow$ <strong class="text-purple-600 dark:text-purple-400">וריאציית הפרמטרים</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 1: The Basics (Wronskian & Reduction) -->
+        <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+            <span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-300 px-2 py-1 rounded">1</span>
+            תלות לינארית ומציאת פתרון שני
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
+                <h4 class="text-lg font-bold text-blue-700 dark:text-blue-400 mb-2">הוורונסקיאן ונוסחת אבל</h4>
+                <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">למשוואה מהצורה <span dir="ltr">$y^{(n)} + p_{n-1}(x)y^{(n-1)} + \dots + p_0(x)y = 0$</span>, הוורונסקיאן בודק האם הפתרונות הם בסיס (בלתי תלויים).</p>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-sm overflow-x-auto text-center text-slate-800 dark:text-slate-200">
+                    <p class="font-bold text-right mb-1">נוסחת אבל (לסדר 2: $y'' + P(x)y' + Q(x)y = 0$):</p>
+                    $$W(x) = C \cdot e^{-\int P(x)dx}$$
+                </div>
+                <p class="text-xs text-red-600 dark:text-red-400 mt-2 font-bold">חשוב: חובה לוודא שהמקדם של הנגזרת הגבוהה ביותר הוא בדיוק 1 לפני זיהוי $P(x)$!</p>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
+                <h4 class="text-lg font-bold text-blue-700 dark:text-blue-400 mb-2">הורדת סדר (נוסחת ד׳אלמבר)</h4>
+                <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">כאשר כבר ידוע פתרון <strong>אחד</strong> לא טריוויאלי ($y_1$) למד״ר לינארית הומוגנית מסדר שני, נחפש פתרון שני מהצורה $y_2 = u(x) \cdot y_1$.</p>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded mb-2 text-sm overflow-x-auto text-center text-slate-800 dark:text-slate-200">
+                    <p class="font-bold text-right mb-1 text-blue-600 dark:text-blue-400">הנוסחה הסגורה המהירה (לזכור!):</p>
+                    $$u(x) = \int \frac{1}{y_1^2} e^{-\int P(x)dx} dx$$
+                </div>
+                <p class="text-xs text-slate-500 mt-2">גם כאן, המשוואה חייבת להיות מנורמלת כך שהמקדם של $y''$ הוא 1.</p>
+            </div>
+        </div>
+
+        <!-- Section 2: Homogeneous Equations -->
+        <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+            <span class="bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-300 px-2 py-1 rounded">2</span>
+            פתרון משוואות הומוגניות (מקדמים קבועים ואוילר)
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-emerald-200 dark:border-slate-700 transition-colors">
+                <h4 class="text-lg font-bold text-emerald-700 dark:text-emerald-400 mb-2">משוואות עם מקדמים קבועים</h4>
+                <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">משוואה מהצורה $ay''+by'+cy=0$. מציבים $y=e^{rx}$ ומקבלים <strong>פולינום אופייני</strong>: $ar^2+br+c=0$.</p>
+                <ul class="list-disc list-inside space-y-2 text-sm text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-900/50 p-3 rounded">
+                    <li><strong>2 שורשים ממשיים ($r_1 \neq r_2$):</strong> <br>$y_h = C_1 e^{r_1 x} + C_2 e^{r_2 x}$</li>
+                    <li><strong>שורש ממשי כפול ($r$):</strong> <br>$y_h = C_1 e^{r x} + C_2 \mathbf{x} e^{r x}$</li>
+                    <li><strong>שורשים מרוכבים צמודים ($\alpha \pm i\beta$):</strong> <br>$y_h = e^{\alpha x} (C_1 \cos(\beta x) + C_2 \sin(\beta x))$</li>
+                </ul>
+            </div>
+
+            <div class="bg-emerald-50 dark:bg-emerald-900/10 rounded-xl shadow-sm p-6 border border-emerald-300 dark:border-emerald-700/50 transition-colors">
+                <h4 class="text-lg font-bold text-emerald-800 dark:text-emerald-300 mb-2">משוואת אוילר (מקדמים משתנים)</h4>
+                <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">משוואה מהצורה $ax^2y''+bxy'+cy=0$ (החזקה של $x$ תואמת לסדר הנגזרת). נפתור ע"י מעבר למקדמים קבועים.</p>
+                <div class="text-sm text-slate-800 dark:text-slate-200 space-y-2">
+                    <p><strong>הצבה (עבור $x>0$):</strong> מציבים $x = e^t$, ולכן $t = \ln(x)$.</p>
+                    <p class="bg-white dark:bg-slate-800 p-2 rounded border border-emerald-200 dark:border-slate-600 font-mono" dir="ltr">
+                        1. $xy' = \dot{y}$ <br>
+                        2. $x^2y'' = \ddot{y} - \dot{y}$ <br>
+                        3. $x^3y''' = \dddot{y} - 3\ddot{y} + 2\dot{y}$
+                    </p>
+                    <p class="text-xs">המשוואה האופיינית שמתקבלת: $ar(r-1) + br + c = 0$. הפתרונות יהיו כמו במקדמים קבועים, רק מחליפים את $e^t$ ב-$x$. (למשל: $x^r$, $x^r \ln x$, או $x^\alpha \cos(\beta \ln x)$).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Non-Homogeneous (Particular Solution) -->
+        <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+            <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-300 px-2 py-1 rounded">3</span>
+            מציאת הפתרון הפרטי ($y_p$) למד"ר אי-הומוגנית
+        </h3>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Method 1: Undetermined Coefficients (Guesser) -->
+            <div class="bg-blue-50 dark:bg-slate-800 rounded-xl shadow-md p-6 border border-blue-200 dark:border-slate-700 transition-colors">
+                <div class="flex justify-between items-start mb-2">
+                    <h4 class="text-lg font-bold text-blue-900 dark:text-blue-300">א': השוואת מקדמים (שיטת הניחוש)</h4>
+                    <span class="text-xs font-bold bg-amber-100 text-amber-800 px-2 py-1 rounded">למקדמים קבועים בלבד!</span>
+                </div>
+                <p class="text-sm text-blue-800 dark:text-slate-300 mb-4">
+                    כאשר המשוואה היא עם מקדמים קבועים והעירור $f(x)$ מורכב מפולינומים, אקספוננטים או פונקציות $\sin/\cos$. צורת הניחוש מוכתבת על ידי התבנית הכללית: 
+                    <span dir="ltr">$f(x) = e^{\alpha x} [P_n(x) \cos(\beta x) + Q_m(x) \sin(\beta x)]$</span>.
+                </p>
+                
+                <!-- Added Table from Tirgul 8 -->
+                <div class="mt-4 overflow-x-auto mb-6">
+                    <p class="text-sm font-bold text-slate-800 dark:text-slate-200 mb-2">טבלת השוואת מקדמים (מתוך תרגול 8):</p>
+                    <table class="styled-table min-w-full text-sm text-right border border-slate-300 dark:border-slate-600">
+                        <thead class="bg-blue-100 dark:bg-blue-900 text-slate-800 dark:text-slate-200">
+                            <tr>
+                                <th class="p-2 border border-slate-300 dark:border-slate-600">סוג העירור $f(x)$</th>
+                                <th class="p-2 border border-slate-300 dark:border-slate-600">השורש הרלוונטי $Z$</th>
+                                <th class="p-2 border border-slate-300 dark:border-slate-600">תבנית הניחוש ל-$y_p(x)$</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-700 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800">
+                            <tr>
+                                <td class="p-2 border border-slate-300 dark:border-slate-600" dir="ltr">$P_n(x)$</td>
+                                <td class="p-2 border border-slate-300 dark:border-slate-600" dir="ltr">$Z = 0$</td>
+                                <td class="p-2 border border-slate-300 dark:border-slate-600" dir="ltr">$x^s \cdot Q_n(x)$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border border-slate-300 dark:border-slate-600" dir="ltr">$P_n(x) e^{\alpha x}$</td>
+                                <td class="p-2 border border-slate-300 dark:border-slate-600" dir="ltr">$Z = \alpha$</td>
+                                <td class="p-2 border border-slate-300 dark:border-slate-600" dir="ltr">$x^s \cdot Q_n(x) e^{\alpha x}$</td>
+                            </tr>
+                            <tr>
+                                <td class="p-2 border border-slate-300 dark:border-slate-600" dir="ltr">$e^{\alpha x} [P_n(x) \cos(\beta x) + M_m(x) \sin(\beta x)]$</td>
+                                <td class="p-2 border border-slate-300 dark:border-slate-600" dir="ltr">$Z = \alpha + i\beta$</td>
+                                <td class="p-2 border border-slate-300 dark:border-slate-600" dir="ltr">$x^s \cdot e^{\alpha x} [R_K(x) \cos(\beta x) + S_K(x) \sin(\beta x)]$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="text-xs mt-2 text-slate-600 dark:text-slate-400 font-bold">* $s$ הוא הריבוי של השורש $Z$ בפולינום האופייני (0 אם הוא אינו שורש). $K = \max(n,m)$. קביל לחלוטין להשתמש בטבלה זו כנימוק בבחינה!</p>
+                </div>
+
+                <p class="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 border-t border-blue-200 dark:border-slate-600 pt-4">מחולל אינטראקטיבי: קבלת צורת הניחוש</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">מעלת פולינום</label>
+                        <select id="polyDegree" class="w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white shadow-sm p-2 border text-sm">
+                            <option value="0">קבוע (0)</option>
+                            <option value="1">לינארי (1)</option>
+                            <option value="2">ריבועי (2)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">יש אקספוננט?</label>
+                        <select id="hasExp" class="w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white shadow-sm p-2 border text-sm">
+                            <option value="no">לא ($\alpha=0$)</option>
+                            <option value="yes">כן ($\alpha\neq 0$)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">יש טריגו?</label>
+                        <select id="hasTrig" class="w-full rounded-md border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white shadow-sm p-2 border text-sm">
+                            <option value="no">לא ($\beta=0$)</option>
+                            <option value="yes">כן ($\sin/\cos$)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-4 flex items-center bg-white dark:bg-slate-900 p-2 rounded border border-blue-100 dark:border-slate-600">
+                    <input type="checkbox" id="isRoot" class="h-4 w-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                    <label for="isRoot" class="ml-2 block text-xs text-slate-700 dark:text-slate-300 mr-2">
+                        <strong class="text-red-600 dark:text-red-400">תהודה (Resonance):</strong> סמנו אם $Z = \alpha + i\beta$ הוא שורש של הפולינום האופייני. 
+                    </label>
+                </div>
+                <button onclick="generateGuess()" class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow transition-colors text-sm">הצג תבנית ניחוש</button>
+                <div id="guessResultContainer" class="mt-4 hidden bg-white dark:bg-slate-900 p-3 rounded border border-blue-200 dark:border-slate-600">
+                    <div id="guessOutput" class="text-center overflow-x-auto bg-slate-50 dark:bg-slate-800 rounded text-base text-slate-800 dark:text-slate-100 font-bold p-2"></div>
+                    <p class="mt-2 text-xs text-slate-600 dark:text-slate-400 border-t border-slate-200 dark:border-slate-700 pt-2" id="guessExplanation"></p>
+                </div>
+            </div>
+
+            <!-- Method 2: Variation of Parameters -->
+            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="text-lg font-bold text-purple-700 dark:text-purple-400">ב': וריאציית הפרמטרים</h4>
+                        <span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-1 rounded">תמיד עובדת!</span>
+                    </div>
+                    <p class="text-sm text-slate-700 dark:text-slate-300 mb-3">
+                        שיטה זו עובדת עבור <strong>כל</strong> פונקציית עירור $f(x)$ (למשל $\tan(x)$ או $\ln(x)$) וכל משוואה לינארית (גם מקדמים משתנים!), בתנאי שאנחנו יודעים את פתרונות ההומוגנית $y_1, y_2$.
+                    </p>
+                    <div class="bg-red-50 dark:bg-red-900/20 p-3 rounded border border-red-200 dark:border-red-800 mb-4">
+                        <p class="text-xs font-bold text-red-700 dark:text-red-400 mb-1">שלב קריטי מקדים:</p>
+                        <p class="text-xs text-red-600 dark:text-red-300">חובה לנרמל את המשוואה לצורה $y''+p(x)y'+q(x)y = f(x)$. מחלקים במקדם של $y''$ כדי לזהות נכון את $f(x)$ לפני ההצבה בנוסחה!</p>
+                    </div>
+                </div>
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded text-sm overflow-x-auto text-center text-slate-800 dark:text-slate-200 mt-auto">
+                    <p class="font-bold text-right mb-2">הנוסחה הסגורה (לסדר 2):</p>
+                    $$y_p(x) = -y_1(x) \int \frac{y_2(x) f(x)}{W(x)} dx + y_2(x) \int \frac{y_1(x) f(x)}{W(x)} dx$$
+                </div>
+            </div>
+        </div>
+
+        <!-- Method 3: Cauchy's Operator Method (Optional/Nice trick) -->
+        <div class="bg-slate-100 dark:bg-slate-800/80 rounded-xl shadow-sm p-6 border border-slate-300 dark:border-slate-600 transition-colors border-dashed">
+            <div class="flex items-center gap-2 mb-2">
+                <h4 class="text-lg font-bold text-slate-700 dark:text-slate-300">ג': שיטת האופרטור של קושי (Cauchy)</h4>
+                <span class="text-xs bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 px-2 py-1 rounded">שיטה חלופית ונחמדה</span>
+            </div>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                לרוב אפשר להסתדר עם ניחוש או וריאציית פרמטרים, אבל שיטת האופרטור $P(D)$ מספקת קיצורי דרך אלגבריים מעולים. הרעיון הוא לסמן נגזרת כ-$D$, ואז לחשב את $y_p = \frac{1}{P(D)}[f(x)]$.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white dark:bg-slate-900 p-3 rounded shadow-sm text-sm text-slate-800 dark:text-slate-200">
+                    <p class="font-bold border-b border-slate-200 dark:border-slate-700 pb-1 mb-2">כלל האקספוננט:</p>
+                    $$\frac{1}{P(D)}[e^{ax}] = \frac{1}{P(a)} e^{ax} \quad (P(a) \neq 0)$$
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-3 rounded shadow-sm text-sm text-slate-800 dark:text-slate-200">
+                    <p class="font-bold border-b border-slate-200 dark:border-slate-700 pb-1 mb-2">כלל ההזזה (Shift):</p>
+                    $$\frac{1}{P(D)}[e^{ax}V(x)] = e^{ax} \frac{1}{P(D+a)}[V(x)]$$
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-3 rounded shadow-sm text-sm text-slate-800 dark:text-slate-200">
+                    <p class="font-bold border-b border-slate-200 dark:border-slate-700 pb-1 mb-2">כלל הסינוס/קוסינוס:</p>
+                    $$\frac{1}{P(D^2)}[\sin(ax)] = \frac{1}{P(-a^2)} \sin(ax)$$
+                </div>
+                <div class="bg-white dark:bg-slate-900 p-3 rounded shadow-sm text-sm text-slate-800 dark:text-slate-200">
+                    <p class="font-bold border-b border-slate-200 dark:border-slate-700 pb-1 mb-2">כלל הפולינום $x^k$:</p>
+                    <p class="text-xs">מפתחים את $\frac{1}{P(D)}$ לטור מקלורן עד החזקה $D^k$, ומפעילים את האופרטורים על הפולינום.</p>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Systems Tab (RENOVATED) -->
     <section id="systems" class="section-content">
         <div class="mb-8 border-b border-slate-200 dark:border-slate-700 pb-4">
             <h2 class="text-3xl font-extrabold text-blue-800 dark:text-blue-400 mb-2">מערכות משוואות דיפרנציאליות ותמונות פאזה</h2>
@@ -788,7 +968,7 @@
 
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-slate-200 dark:border-slate-700 transition-colors">
                 <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-3 border-b border-slate-100 dark:border-slate-700 pb-2">מנת ריילי (Rayleigh Quotient)</h3>
-                <p class="mb-4 text-sm text-slate-600 dark:text-slate-400">כלי חזק המשמש לקביעת הסימן של הערכים העצמיים (למשל, כדי להוכיח במבחן שכל $\lambda \ge 0$). הנוסחה מתקבלת מהכפלת המשוואה ב-$y$ וביצוע אינטגרציה בחלקים:</p>
+                <p class="mb-4 text-sm text-slate-600 dark:text-slate-400">כלי חזק המשמש לקביעת הסימן של הערכים עצמיים (למשל, כדי להוכיח במבחן שכל $\lambda \ge 0$). הנוסחה מתקבלת מהכפלת המשוואה ב-$y$ וביצוע אינטגרציה בחלקים:</p>
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg overflow-x-auto text-center text-slate-800 dark:text-slate-200 text-sm">
                     $$\lambda = \frac{-p(x)y(x)y'(x)\big|_a^b + \int_a^b \left[ p(x)(y')^2 + q(x)y^2 \right] dx}{\int_a^b r(x) y^2 dx}$$
                 </div>
@@ -883,9 +1063,9 @@
                 </button>
                 <div id="aiQuizResult" class="mt-6 hidden">
                     <div id="aiLoading2" class="flex justify-center items-center space-x-2 space-x-reverse text-blue-600 dark:text-blue-400 mb-4 hidden"><span>בונה שאלה מאתגרת...</span></div>
-                    <div id="aiQuizQuestion" class="bg-blue-50 dark:bg-slate-900 p-4 rounded-lg border border-blue-200 dark:border-slate-600 text-sm leading-relaxed whitespace-pre-wrap font-semibold mb-4 text-slate-800 dark:text-slate-200"></div>
+                    <div id="aiQuizQuestion" class="bg-white dark:bg-slate-800 p-4 rounded border border-blue-100 dark:border-slate-700 text-sm leading-relaxed whitespace-pre-wrap font-semibold mb-4 text-slate-800 dark:text-slate-200"></div>
                     <button id="showAnswerBtn" onclick="toggleAnswer()" class="hidden text-sm text-blue-600 dark:text-blue-400 underline font-bold hover:text-blue-800 dark:hover:text-blue-200">הראה פתרון מלא</button>
-                    <div id="aiQuizAnswer" class="mt-4 bg-emerald-50 dark:bg-emerald-900/30 p-4 rounded-lg border border-emerald-200 dark:border-emerald-800 text-sm leading-relaxed whitespace-pre-wrap hidden text-slate-800 dark:text-slate-200"></div>
+                    <div id="aiQuizAnswer" class="mt-4 bg-emerald-50 dark:bg-emerald-900/30 p-4 rounded border border-emerald-200 dark:border-emerald-800 text-sm leading-relaxed whitespace-pre-wrap hidden text-slate-800 dark:text-slate-200"></div>
                 </div>
             </div>
         </div>
@@ -1185,7 +1365,7 @@
         currentTrajectories.push({ startX: startX, startY: startY, points: backwardPts.concat(forwardPts), color: myColor });
     }
 
-    // --- Gemini API Setup (Robust Multi-Model Fallback) ---
+    // --- Gemini API Setup (Fallback to strict Fetch) ---
     async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
         const apiKey = getStoredApiKey()?.trim();
         if (!apiKey) {
@@ -1193,32 +1373,18 @@
             throw new Error("Missing API Key");
         }
 
-        // רשימת מודלים לנסות במקרה של שגיאת 404 (לא נמצא)
-        const modelsToTry = [
-            "gemini-1.5-flash", 
-            "gemini-1.5-flash-latest", 
-            "gemini-1.5-pro",
-            "gemini-pro"
-        ];
-        
-        let lastError = "";
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        const payload = { 
+            contents: [{ parts: [{ text: userPrompt }] }], 
+            systemInstruction: { parts: [{ text: systemPrompt }] }
+        };
 
-        for (let modelName of modelsToTry) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-            const payload = { 
-                contents: [{ parts: [{ text: userPrompt }] }]
-            };
+        if (isJson) {
+            payload.generationConfig = { responseMimeType: "application/json" };
+        }
 
-            // ל-gemini-pro הישן יש בעיה עם systemInstruction
-            if (modelName !== "gemini-pro") {
-                payload.systemInstruction = { parts: [{ text: systemPrompt }] };
-                if (isJson) {
-                    payload.generationConfig = { responseMimeType: "application/json" };
-                }
-            } else {
-                payload.contents[0].parts[0].text = "System: " + systemPrompt + "\n\nUser: " + userPrompt;
-            }
-
+        let retries = 3; let delays = [1000, 2000, 4000];
+        for (let i = 0; i < retries; i++) {
             try {
                 const response = await fetch(url, { 
                     method: 'POST', 
@@ -1226,40 +1392,33 @@
                     body: JSON.stringify(payload) 
                 });
                 
-                const data = await response.json().catch(() => ({}));
-                
                 if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
                     let errorMsg = data.error?.message || response.statusText;
                     
-                    if (response.status === 404) {
-                        console.warn(`Model ${modelName} returned 404. Trying next model...`);
-                        lastError = errorMsg;
-                        continue; // מדלג למודל הבא ברשימה
-                    } else if (response.status === 400 && errorMsg.includes("API key not valid")) {
-                         alert("המפתח שהוזן אינו תקין. ודא שהעתקת אותו במלואו מה-AI Studio.");
-                         throw new Error("Invalid API Key");
+                    if (response.status === 400 && errorMsg.includes("API key not valid")) {
+                         alert("שגיאה 400: המפתח שהוזן אינו תקין. אנא ודא שהעתקת אותו במלואו מה-AI Studio.");
                     } else if (response.status === 403 || errorMsg.toLowerCase().includes("location")) {
-                         alert("שגיאת מיקום (403): גוגל חוסמת את הבקשה. יש להפעיל VPN (למשל לאירופה/ארה״ב).");
-                         throw new Error("Location Blocked");
+                         alert("שגיאת מיקום (403): נראה שגוגל חוסמת את הבקשה מהאזור הזה. נסה להשתמש ב-VPN.");
                     } else {
-                        alert(`שגיאת שרת גוגל (${response.status}):\n${errorMsg}`);
-                        throw new Error(`API Error: ${response.status}`);
+                        alert(`שגיאת שרת מגוגל (${response.status}):\n${errorMsg}`);
                     }
+                    throw new Error(`API Error: ${response.status} - ${errorMsg}`);
                 }
                 
+                const data = await response.json();
                 return data.candidates?.[0]?.content?.parts?.[0]?.text;
                 
             } catch (error) {
-                if (error.message !== "Failed to fetch" && !error.message.includes("404")) {
+                console.error("API Fetch Error:", error);
+                
+                if (i === retries - 1) {
+                    alert("לא ניתן להתחבר לשרתי גוגל. ייתכן שיש חסימת מיקום (אופייני לישראל) או בעיית רשת.\n\nמומלץ לנסות שוב בעזרת תוסף VPN חינמי, למשל TouchVPN לכרום: https://chrome.google.com/webstore/detail/touch-vpn-secure-and-unli/bihmplhobchoageeokmcmpbahlhpnjbg");
                     throw error;
                 }
-                console.error(`Fetch failed for ${modelName}:`, error);
-                lastError = error.message;
+                await new Promise(res => setTimeout(res, delays[i]));
             }
         }
-        
-        alert("כל ניסיונות ההתחברות למודלים השונים של גוגל נכשלו. השגיאה האחרונה: " + lastError);
-        throw new Error("All models failed");
     }
 
     async function analyzeEquation() {
