@@ -47,11 +47,24 @@
         .styled-table tbody tr:last-of-type { border-bottom: 2px solid #1e40af; }
         .dark .styled-table tbody tr:last-of-type { border-bottom: 2px solid #3b82f6; }
         
-        /* Accordion transition */
-        .accordion-content { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
-        .accordion-content.expanded { max-height: 500px; opacity: 1; }
-        .accordion-icon { transition: transform 0.3s ease; }
-        .accordion-icon.rotated { transform: rotate(180deg); }
+        .accordion-content { 
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease-in-out; 
+            max-height: 0; 
+            opacity: 0; 
+            overflow: hidden; 
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .accordion-content.expanded { 
+            max-height: 500px; 
+            opacity: 1; 
+            padding-top: 0.5rem; /* מחליף את ה-py-2 של Tailwind */
+            padding-bottom: 0.5rem;
+            border-top: 1px solid #dbeafe; 
+        }
+        .dark .accordion-content.expanded {
+            border-top: 1px solid #334155; 
+        }
     </style>
 </head>
 <body class="text-slate-800 bg-slate-50 dark:bg-slate-900 dark:text-slate-200 antialiased overflow-x-hidden">
@@ -472,7 +485,7 @@
                     <span>📖 מקרא מושגים: איזוקלינות, נולקלינות ויציבות</span>
                     <svg id="icon-legend-fields" class="w-5 h-5 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div id="legend-fields" class="accordion-content bg-white dark:bg-slate-900 px-4 py-2 border-t border-blue-100 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300">
+                <div id="legend-fields" class="accordion-content bg-blue-50 dark:bg-slate-800 px-4 text-sm text-slate-700 dark:text-slate-300">
                     <ul class="list-disc list-inside space-y-2 mt-2 mb-2">
                         <li><strong>איזוקלינה (Isocline - עקומת שוות-שיפוע):</strong> עקומה גיאומטרית במישור ה-$xy$ שעליה השיפוע של הפתרונות הוא קבוע. נמצאת על ידי פתרון המשוואה $y' = f(x,y) = k$.</li>
                         <li><strong>נולקלינה (Nullcline):</strong> מקרה פרטי וחשוב של איזוקלינה שבו השיפוע הוא אפס ($k=0$). כלומר, אוסף הנקודות המקיימות $f(x,y) = 0$. הפתרונות חוצים נולקלינות אלו עם משיק אופקי (נקודות קיצון).</li>
@@ -611,7 +624,7 @@
                     <span>📖 מקרא סימונים לפרק זה</span>
                     <svg id="icon-legend-higher-order" class="w-5 h-5 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div id="legend-higher-order" class="accordion-content bg-white dark:bg-slate-900 px-4 py-2 border-t border-blue-100 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300">
+                <div id="legend-higher-order" class="accordion-content bg-blue-50 dark:bg-slate-800 px-4 text-sm text-slate-700 dark:text-slate-300">
                     <ul class="list-disc list-inside space-y-1 mt-2 mb-2">
                         <li><strong>$y_h(x)$ (פתרון הומוגני):</strong> הפתרון של המשוואה כאשר אגף ימין שווה לאפס ($f(x)=0$). מכיל קבועים שרירותיים $C_1, C_2...$</li>
                         <li><strong>$y_p(x)$ (פתרון פרטי):</strong> פתרון ספציפי כלשהו למשוואה האי-הומוגנית (כאשר $f(x) \neq 0$). לא מכיל קבועים שרירותיים.</li>
@@ -893,7 +906,7 @@
                     <span>📖 מקרא סימונים לפרק זה</span>
                     <svg id="icon-legend-systems" class="w-5 h-5 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div id="legend-systems" class="accordion-content bg-white dark:bg-slate-900 px-4 py-2 border-t border-blue-100 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300">
+                <div id="legend-systems" class="accordion-content bg-blue-50 dark:bg-slate-800 px-4 text-sm text-slate-700 dark:text-slate-300">
                     <ul class="list-disc list-inside space-y-1 mt-2 mb-2">
                         <li><strong>$\vec{x}$ או $X$:</strong> וקטור הפונקציות הנעלמות (לרוב $\begin{pmatrix} x_1(t) \\ x_2(t) \end{pmatrix}$).</li>
                         <li><strong>$A$:</strong> מטריצת המקדמים (הקבועים) של המערכת.</li>
@@ -1043,7 +1056,7 @@
                     <span>📖 מקרא סימונים לפרק זה</span>
                     <svg id="icon-legend-sturm" class="w-5 h-5 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div id="legend-sturm" class="accordion-content bg-white dark:bg-slate-900 px-4 py-2 border-t border-blue-100 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-300">
+                <div id="legend-sturm" class="accordion-content bg-blue-50 dark:bg-slate-800 px-4 text-sm text-slate-700 dark:text-slate-300">
                     <ul class="list-disc list-inside space-y-1 mt-2 mb-2">
                         <li><strong>$\lambda$ (ערך עצמי):</strong> קבוע שעבורו למשוואה יש פתרון שונה מאפס המקיים את תנאי השפה. מסודרים כ-$\lambda_1 < \lambda_2 < \dots$</li>
                         <li><strong>$y_n(x)$ (פונקציה עצמית):</strong> הפתרון הלא-טריוויאלי המתאים לערך העצמי $\lambda_n$.</li>
