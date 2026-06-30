@@ -1570,7 +1570,15 @@ async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
         try {
             const responseText = await callGeminiAPI(`נתח: ${inputEl.value.trim()}`, sysPrompt, false);
             document.getElementById('aiLoading1').classList.add('hidden');
-            document.getElementById('aiAnalysisContent').innerHTML = responseText;
+            // פילטר שמחליף את סימני המרקדאון בתגיות HTML מעוצבות
+const formattedText = responseText
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // הופך שתי כוכביות לטקסט מודגש
+    .replace(/### (.*)/g, '<strong class="text-lg block mt-2 mb-1 text-emerald-700 dark:text-emerald-400">$1</strong>') // כותרות קטנות
+    .replace(/## (.*)/g, '<strong class="text-xl block mt-2 mb-1 text-emerald-800 dark:text-emerald-300">$1</strong>') // כותרות גדולות
+    .replace(/\*(.*?)\*/g, '<em>$1</em>'); // הופך כוכבית אחת לטקסט נטוי
+
+document.getElementById('aiAnalysisContent').innerHTML = formattedText;
+
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiAnalysisContent')]);
         } catch(e) { document.getElementById('aiLoading1').classList.add('hidden'); }
     }
