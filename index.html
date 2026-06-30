@@ -47,11 +47,21 @@
         .styled-table tbody tr:last-of-type { border-bottom: 2px solid #1e40af; }
         .dark .styled-table tbody tr:last-of-type { border-bottom: 2px solid #3b82f6; }
         
-        /* Accordion transition */
-        .accordion-content { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
-        .accordion-content.expanded { max-height: 500px; opacity: 1; }
-        .accordion-icon { transition: transform 0.3s ease; }
-        .accordion-icon.rotated { transform: rotate(180deg); }
+        .accordion-content { 
+transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; 
+max-height: 0; 
+opacity: 0; 
+overflow: hidden; 
+}
+.accordion-content.expanded { 
+max-height: 500px; 
+opacity: 1; 
+border-top: 1px solid #dbeafe; 
+}
+.dark .accordion-content.expanded {
+border-top: 1px solid #334155; 
+}
+
     </style>
 </head>
 <body class="text-slate-800 bg-slate-50 dark:bg-slate-900 dark:text-slate-200 antialiased overflow-x-hidden">
@@ -467,7 +477,7 @@
             </p>
             
             <!-- Accordion Legend -->
-            <div class="mt-4 border border-blue-200 dark:border-blue-800 rounded-lg overflow-hidden">
+            <div class="mt-4 rounded-lg overflow-hidden">
                 <button onclick="toggleAccordion('legend-fields')" class="w-full bg-blue-50 dark:bg-slate-800 p-3 text-right flex justify-between items-center font-bold text-blue-800 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-slate-700 transition-colors focus:outline-none">
                     <span>📖 מקרא מושגים: איזוקלינות, נולקלינות ויציבות</span>
                     <svg id="icon-legend-fields" class="w-5 h-5 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
