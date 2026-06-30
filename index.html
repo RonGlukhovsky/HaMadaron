@@ -1600,8 +1600,22 @@ document.getElementById('aiAnalysisContent').innerHTML = formattedText;
             document.getElementById('aiLoading2').classList.add('hidden');
             let cleanText = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             const quizData = JSON.parse(cleanText);
-            document.getElementById('aiQuizQuestion').innerHTML = quizData.question;
-            currentQuizAnswer = quizData.answer;
+            // פילטר מעצב לשאלה
+const formattedQuestion = quizData.question
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/### (.*)/g, '<strong class="text-lg block mt-2 mb-1 text-blue-700 dark:text-blue-400">$1</strong>')
+    .replace(/## (.*)/g, '<strong class="text-xl block mt-2 mb-1 text-blue-800 dark:text-blue-300">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+document.getElementById('aiQuizQuestion').innerHTML = formattedQuestion;
+
+// פילטר מעצב לתשובה
+currentQuizAnswer = quizData.answer
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/### (.*)/g, '<strong class="text-lg block mt-2 mb-1 text-emerald-700 dark:text-emerald-400">$1</strong>')
+    .replace(/## (.*)/g, '<strong class="text-xl block mt-2 mb-1 text-emerald-800 dark:text-emerald-300">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+
             document.getElementById('showAnswerBtn').classList.remove('hidden');
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizQuestion')]);
         } catch(e) { 
@@ -1634,8 +1648,22 @@ document.getElementById('aiAnalysisContent').innerHTML = formattedText;
             document.getElementById('sturmLoading').classList.add('hidden');
             let cleanText = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             const quizData = JSON.parse(cleanText);
-            document.getElementById('sturmQuizQuestion').innerHTML = quizData.question;
-            currentSturmAnswer = quizData.answer;
+            // פילטר מעצב לשאלת שטורם
+const formattedSturmQuestion = quizData.question
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/### (.*)/g, '<strong class="text-lg block mt-2 mb-1 text-indigo-700 dark:text-indigo-400">$1</strong>')
+    .replace(/## (.*)/g, '<strong class="text-xl block mt-2 mb-1 text-indigo-800 dark:text-indigo-300">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+document.getElementById('sturmQuizQuestion').innerHTML = formattedSturmQuestion;
+
+// פילטר מעצב לתשובת שטורם
+currentSturmAnswer = quizData.answer
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/### (.*)/g, '<strong class="text-lg block mt-2 mb-1 text-emerald-700 dark:text-emerald-400">$1</strong>')
+    .replace(/## (.*)/g, '<strong class="text-xl block mt-2 mb-1 text-emerald-800 dark:text-emerald-300">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+
             document.getElementById('showSturmAnswerBtn').classList.remove('hidden');
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizQuestion')]);
         } catch(e) { 
