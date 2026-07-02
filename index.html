@@ -1229,11 +1229,12 @@
 
         <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl shadow-sm p-6 border border-indigo-200 dark:border-indigo-800/50 transition-colors mt-6 text-center">
             <h3 class="text-xl font-bold text-indigo-800 dark:text-indigo-300 mb-2 flex justify-center items-center gap-2">
-                מחולל שאלות "נכון / לא נכון" (שטורם-ליוביל)
+                תרגול פרקטי: שטורם-ליוביל ✨
             </h3>
-            <p class="text-sm text-indigo-700 dark:text-indigo-300/80 mb-4">תורת שטורם-ליוביל גדושה במשפטים תיאורטיים על שורשים, אורתוגונליות ומנת ריילי. בחן את עצמך בשאלות דמויות ממ"ן!</p>
-            <button onclick="generateSturmQuiz()" class="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-bold py-2 px-6 rounded shadow transition-colors">
-                הגרל שאלת נכון / לא נכון
+            <p class="text-sm text-indigo-700 dark:text-indigo-300/80 mb-4">בחן את עצמך בשאלת חישוב ברמת מבחן בנושא זה.</p>
+            
+            <button onclick="generateTopicQuiz('sturm')" class="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-bold py-2 px-6 rounded shadow transition-colors">
+                הגרל שאלת תרגול
             </button>
 
             <div id="sturmQuizResult" class="mt-6 hidden text-right">
@@ -1243,7 +1244,7 @@
                 </div>
                 <div id="sturmQuizQuestion" class="bg-white dark:bg-slate-800 p-4 rounded border border-indigo-100 dark:border-slate-700 text-sm leading-relaxed whitespace-pre-wrap font-semibold mb-4 text-slate-800 dark:text-slate-200"></div>
                 <div class="text-center">
-                    <button id="showSturmAnswerBtn" onclick="toggleSturmAnswer()" class="hidden text-sm text-indigo-600 dark:text-indigo-400 underline font-bold hover:text-indigo-800 dark:hover:text-indigo-200">הראה תשובה מפורטת</button>
+                    <button id="show-sturm-AnswerBtn" onclick="toggleTopicAnswer('sturm')" class="hidden text-sm text-indigo-600 dark:text-indigo-400 underline font-bold hover:text-indigo-800 dark:hover:text-indigo-200">הראה פתרון מלא</button>
                 </div>
                 <div id="sturmQuizAnswer" class="mt-4 bg-emerald-50 dark:bg-emerald-900/30 p-4 rounded border border-emerald-200 dark:border-emerald-800 text-sm leading-relaxed whitespace-pre-wrap hidden text-slate-800 dark:text-slate-200"></div>
             </div>
