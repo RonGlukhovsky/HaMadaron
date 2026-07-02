@@ -1672,7 +1672,7 @@ async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
 
         let currentEquationSolution = "";
 
-    async function analyzeEquation() {
+        async function analyzeEquation() {
         if(!getStoredApiKey()) { 
             alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); 
             return; 
@@ -1686,7 +1686,8 @@ async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
         document.getElementById('aiFullSolutionContent').classList.add('hidden');
         document.getElementById('showAiSolutionBtn').classList.add('hidden');
 
-        const sysPrompt = "אתה מתרגל מומחה בקורס מד\"ר 104136 בטכניון. זהה את המשוואה שהוזנה, הסבר את הסד\"פ וספק צעד ראשון לפתרון כרמז. בנוסף, ספק את הפתרון המלא. החזר אך ורק אובייקט JSON חוקי בפורמט בדיוק: {\"hint\": \"זיהוי המשוואה, סד\"פ ורמז צעד ראשון\", \"solution\": \"הפתרון המלא שלב אחר שלב\"} ללא שום מילה נוספת.";
+        // הפרומפט המעודכן - עם דגש קריטי על עיצוב LaTeX וסימני דולר בתוך JSON
+        const sysPrompt = "אתה מתרגל מומחה בקורס מד\"ר 104136 בטכניון. זהה את המשוואה, הסבר סד\"פ ורמז לצעד ראשון, וספק פתרון מלא. החזר אך ורק JSON חוקי: {\"hint\": \"...\", \"solution\": \"...\"}. כללי חובה למתמטיקה: 1. השתמש ב-$ למשוואות שורה וב-$$ לבלוק. 2. לעולם אל תשים לוכסן לפני דולר (ללא \\$). 3. חייב להכפיל כל לוכסן אחורי של LaTeX (למשל רשום \\\\frac ולא \\frac, \\\\int ולא \\int, \\\\alpha ולא \\alpha) אחרת ה-JSON יישבר! ללא מילים נוספות.";
         
         try {
             const rawResponse = await callGeminiAPI("נתח: " + inputEl.value.trim(), sysPrompt, true);
@@ -1699,7 +1700,8 @@ async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
                 .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
                 .replace(/### (.*)/g, "<strong class=\"text-lg block mt-2 mb-1 text-emerald-700 dark:text-emerald-400\">$1</strong>")
                 .replace(/## (.*)/g, "<strong class=\"text-xl block mt-2 mb-1 text-emerald-800 dark:text-emerald-300\">$1</strong>")
-                .replace(/\*(.*?)\*/g, "<em>$1</em>");
+                .replace(/\*(.*?)\*/g, "<em>$1</em>")
+                .replace(/\\\$/g, "$"); // גיבוי: אם ה-AI בכל זאת שם \$ , אנחנו מנקים את זה ידנית
 
             document.getElementById('aiAnalysisContent').innerHTML = formatText(eqData.hint);
             currentEquationSolution = formatText(eqData.solution);
@@ -1712,6 +1714,7 @@ async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
             console.error("Analysis Error:", e);
         }
     }
+
 
     function showEquationSolution() {
         const solutionDiv = document.getElementById('aiFullSolutionContent');
