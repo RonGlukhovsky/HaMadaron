@@ -1281,9 +1281,10 @@
 
             </div>
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-blue-200 dark:border-blue-800 border-t-4 transition-colors">
-                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">אימון למבחן (חידון אקראי)</h3>
+                <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">סימולטור שאלות תיאוריה (נכון / לא נכון)</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4">שאלות חישוב נמצאות בלשוניות הספציפיות. כאן נבחן את ההבנה התיאורטית שלך של משפטי הקורס מכל הנושאים, בדיוק כמו בחלק האמריקאי במבחן.</p>
                 <button onclick="generateQuiz()" class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white font-bold py-3 px-4 rounded shadow transition-colors flex justify-center items-center gap-2">
-                    <span>חולל שאלת מבחן קונספטואלית</span><span>✨</span>
+                    <span>הגרל טענת נכון/לא-נכון מאתגרת</span><span>✨</span>
                 </button>
                 <div id="aiQuizResult" class="mt-6 hidden">
                     <div id="aiLoading2" class="flex justify-center items-center space-x-2 space-x-reverse text-blue-600 dark:text-blue-400 mb-4 hidden"><span>בונה שאלה מאתגרת...</span></div>
@@ -1727,44 +1728,44 @@ async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
 
 
     let currentQuizAnswer = "";
-    async function generateQuiz() {
-        if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); return; }
+        async function generateQuiz() {
+        if(!getStoredApiKey()) { 
+            alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); 
+            return; 
+        }
         document.getElementById('aiQuizResult').classList.remove('hidden');
         document.getElementById('aiLoading2').classList.remove('hidden');
         document.getElementById('aiQuizQuestion').innerHTML = '';
         document.getElementById('aiQuizAnswer').classList.add('hidden');
         document.getElementById('showAnswerBtn').classList.add('hidden');
-
-        const sysPrompt = `אתה מרצה הקורס 104136. צור שאלת תיאוריה אחת מתוך: שדות כיוון, יציבות, ורונסקיאן, התכנסות במידה שווה, תפירת פתרונות, טורים או שטורם-ליוביל. 
-        החזר אך ורק אובייקט JSON חוקי בפורמט הבא בדיוק: {"question": "השאלה", "answer": "התשובה וההסבר התיאורטי"} ללא שום מילה נוספת וללא תגיות markdown.`;
+        
+        // הפרומפט המעודכן - מתמקד רק בתיאוריה של מד"ר טכניון!
+        const sysPrompt = "אתה מרצה הקורס משוואות דיפרנציאליות רגילות 104136. צור שאלת תיאוריה מסוג 'טענה: נכון / לא נכון' באחד מהנושאים: משפט קיום ויחידות, ורונסקיאן, התכנסות במ\"ש, תפירת פתרונות, או משפטי שטורם-ליוביל. השאלה צריכה להיות טריקית וברמת מבחן. החזר אך ורק JSON חוקי: {\"question\": \"הטענה: ...\", \"answer\": \"נכון/לא נכון. הסבר: ...\"}. כללי מתמטיקה: 1. השתמש ב-$ לשורות וב-$$ לבלוקים. 2. אל תשים לוכסן לפני דולר! 3. הכפל לוכסנים של LaTeX (למשל \\\\alpha ולא \\alpha). ללא שום מילה נוספת.";
         
         try {
             const rawResponse = await callGeminiAPI("צור שאלת תיאוריה", sysPrompt, true);
             document.getElementById('aiLoading2').classList.add('hidden');
             let cleanText = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
             const quizData = JSON.parse(cleanText);
-            // פילטר מעצב לשאלה
-const formattedQuestion = quizData.question
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/### (.*)/g, '<strong class="text-lg block mt-2 mb-1 text-blue-700 dark:text-blue-400">$1</strong>')
-    .replace(/## (.*)/g, '<strong class="text-xl block mt-2 mb-1 text-blue-800 dark:text-blue-300">$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            const formatText = (text) => text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/### (.*)/g, '<strong class="text-lg block mt-2 mb-1 text-blue-700 dark:text-blue-400">$1</strong>')
+                .replace(/## (.*)/g, '<strong class="text-xl block mt-2 mb-1 text-blue-800 dark:text-blue-300">$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\\\$/g, "$");
 
-document.getElementById('aiQuizQuestion').innerHTML = formattedQuestion;
-
-// פילטר מעצב לתשובה
-currentQuizAnswer = quizData.answer
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/### (.*)/g, '<strong class="text-lg block mt-2 mb-1 text-emerald-700 dark:text-emerald-400">$1</strong>')
-    .replace(/## (.*)/g, '<strong class="text-xl block mt-2 mb-1 text-emerald-800 dark:text-emerald-300">$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>');
-
+            document.getElementById('aiQuizQuestion').innerHTML = formatText(quizData.question);
+            currentQuizAnswer = formatText(quizData.answer);
+            
             document.getElementById('showAnswerBtn').classList.remove('hidden');
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizQuestion')]);
         } catch(e) { 
-            document.getElementById('aiLoading2').classList.add('hidden'); 
+            document.getElementById('aiLoading2').classList.add('hidden');
+            console.error("Quiz Error:", e);
         }
     }
+
 
     function toggleAnswer() {
         document.getElementById('aiQuizAnswer').innerHTML = currentQuizAnswer;
