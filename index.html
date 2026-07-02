@@ -1734,53 +1734,66 @@ currentQuizAnswer = quizData.answer
         if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiQuizAnswer')]);
     }
 
-    // --- Sturm-Liouville Quiz ---
-    let currentSturmAnswer = "";
-    async function generateSturmQuiz() {
-        if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); return; }
-        document.getElementById('sturmQuizResult').classList.remove('hidden');
-        document.getElementById('sturmLoading').classList.remove('hidden');
-        document.getElementById('sturmQuizQuestion').innerHTML = '';
-        document.getElementById('sturmQuizAnswer').classList.add('hidden');
-        document.getElementById('showSturmAnswerBtn').classList.add('hidden');
+    // --- Topic Specific Quiz Logic ---
+    let currentTopicAnswers = {};
 
-        const sysPrompt = `אתה מרצה בקורס מד"ר 104136 בטכניון. צור שאלת "נכון / לא נכון" תיאורטית ומאתגרת בנושא שטורם-ליוביל בלבד. 
-        החזר אך ורק אובייקט JSON חוקי בפורמט הבא בדיוק: {"question": "טענה: [הטענה שלך כאן]", "answer": "נכון / לא נכון. [הסבר תיאורטי מפורט]"} ללא שום מילה נוספת וללא תגיות markdown.`;
+    const topicPrompts = {
+        "series": "אתה מרצה בקורס משוואות דיפרנציאליות רגילות (104136 בטכניון). חולל שאלת חישוב/פרקטיקה ברמת מבחן בנושא **טורי חזקות והתכנסות**. השאלה צריכה לעסוק במציאת רדיוס התכנסות, מציאת סכום של טור ע\"י גזירה/אינטגרציה, מבחן M, או פתרון מד\"ר אנליטית סביב נקודה רגילה. החזר אך ורק אובייקט JSON חוקי בפורמט בדיוק: {\"question\": \"השאלה\", \"answer\": \"הפתרון המלא שלב אחר שלב\"} ללא שום מילה נוספת.",
+        "first-order": "אתה מרצה בקורס משוואות דיפרנציאליות רגילות (104136 בטכניון). חולל שאלת חישוב ברמת מבחן בנושא **פתרון משוואה מסדר ראשון** (מדוייקת, ברנולי, הומוגנית או לינארית - אל תגיד איזו, שהסטודנט יזהה). החזר אך ורק אובייקט JSON חוקי בפורמט בדיוק: {\"question\": \"השאלה עם תנאי התחלה\", \"answer\": \"הפתרון המלא כולל זיהוי השיטה\"} ללא שום מילה נוספת.",
+        "higher-order": "אתה מרצה בקורס משוואות דיפרנציאליות רגילות (104136 בטכניון). חולל שאלת חישוב ברמת מבחן בנושא **משוואות לינאריות מסדר עליון**. בקש מציאת פתרון פרטי (שיטת הניחוש או וריאציית פרמטרים) או שימוש בהורדת סדר. החזר אך ורק אובייקט JSON חוקי בפורמט בדיוק: {\"question\": \"השאלה\", \"answer\": \"הפתרון המלא (הומוגני ואז פרטי)\"} ללא שום מילה נוספת.",
+        "systems": "אתה מרצה בקורס משוואות דיפרנציאליות רגילות (104136 בטכניון). חולל שאלת חישוב ברמת מבחן בנושא **מערכות מד\"ר לינאריות ופאזה**. בקש פתרון כללי של מערכת 2x2 וסיווג יציבות. החזר אך ורק אובייקט JSON חוקי בפורמט בדיוק: {\"question\": \"השאלה\", \"answer\": \"הפתרון המלא כולל פולינום אופייני, וקטורים עצמיים וסיווג נקודה קריטית\"} ללא שום מילה נוספת.",
+        "sturm": "אתה מרצה בקורס משוואות דיפרנציאליות רגילות (104136 בטכניון). חולל שאלת חישוב ברמת מבחן בנושא **בעיות שטורם-ליוביל**. תן מד\"ר סדר שני ותנאי שפה ובקש למצוא את כל הערכים העצמיים והפונקציות העצמיות. החזר אך ורק אובייקט JSON חוקי בפורמט בדיוק: {\"question\": \"השאלה\", \"answer\": \"פתרון מלא שמחולק לבדיקת 3 המקרים לערך העצמי\"} ללא שום מילה נוספת."
+    };
+
+    async function generateTopicQuiz(topicId) {
+        if(!getStoredApiKey()) { 
+            alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); 
+            return; 
+        }
+        
+        document.getElementById(topicId + "QuizResult").classList.remove("hidden");
+        document.getElementById(topicId + "Loading").classList.remove("hidden");
+        document.getElementById(topicId + "QuizQuestion").innerHTML = "";
+        document.getElementById(topicId + "QuizAnswer").classList.add("hidden");
+        document.getElementById("show-" + topicId + "-AnswerBtn").classList.add("hidden");
+        
+        const sysPrompt = topicPrompts[topicId];
         
         try {
-            const rawResponse = await callGeminiAPI("צור שאלת נכון לא נכון שטורם ליוביל", sysPrompt, true);
-            document.getElementById('sturmLoading').classList.add('hidden');
-            let cleanText = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+            const rawResponse = await callGeminiAPI("צור שאלת חישוב", sysPrompt, true);
+            document.getElementById(topicId + "Loading").classList.add("hidden");
+            
+            let cleanText = rawResponse.replace(/```json/g, "").replace(/```/g, "").trim();
             const quizData = JSON.parse(cleanText);
-            // פילטר מעצב לשאלת שטורם
-const formattedSturmQuestion = quizData.question
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/### (.*)/g, '<strong class="text-lg block mt-2 mb-1 text-indigo-700 dark:text-indigo-400">$1</strong>')
-    .replace(/## (.*)/g, '<strong class="text-xl block mt-2 mb-1 text-indigo-800 dark:text-indigo-300">$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            const formatText = (text) => text
+                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                .replace(/### (.*)/g, "<strong class=\"text-lg block mt-2 mb-1 text-indigo-700 dark:text-indigo-400\">$1</strong>")
+                .replace(/## (.*)/g, "<strong class=\"text-xl block mt-2 mb-1 text-indigo-800 dark:text-indigo-300\">$1</strong>")
+                .replace(/\*(.*?)\*/g, "<em>$1</em>");
 
-document.getElementById('sturmQuizQuestion').innerHTML = formattedSturmQuestion;
-
-// פילטר מעצב לתשובת שטורם
-currentSturmAnswer = quizData.answer
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/### (.*)/g, '<strong class="text-lg block mt-2 mb-1 text-emerald-700 dark:text-emerald-400">$1</strong>')
-    .replace(/## (.*)/g, '<strong class="text-xl block mt-2 mb-1 text-emerald-800 dark:text-emerald-300">$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-            document.getElementById('showSturmAnswerBtn').classList.remove('hidden');
-            if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizQuestion')]);
+            document.getElementById(topicId + "QuizQuestion").innerHTML = formatText(quizData.question);
+            currentTopicAnswers[topicId] = formatText(quizData.answer);
+            
+            document.getElementById("show-" + topicId + "-AnswerBtn").classList.remove("hidden");
+            
+            if (window.MathJax) MathJax.typesetPromise([document.getElementById(topicId + "QuizQuestion")]);
+            
         } catch(e) { 
-            document.getElementById('sturmLoading').classList.add('hidden');
+            document.getElementById(topicId + "Loading").classList.add("hidden");
+            console.error("Topic Quiz Error:", e);
         }
     }
 
-    function toggleSturmAnswer() {
-        document.getElementById('sturmQuizAnswer').innerHTML = currentSturmAnswer;
-        document.getElementById('sturmQuizAnswer').classList.remove('hidden');
-        document.getElementById('showSturmAnswerBtn').classList.add('hidden');
-        if (window.MathJax) MathJax.typesetPromise([document.getElementById('sturmQuizAnswer')]);
+    function toggleTopicAnswer(topicId) {
+        const answerDiv = document.getElementById(topicId + "QuizAnswer");
+        answerDiv.innerHTML = currentTopicAnswers[topicId];
+        answerDiv.classList.remove("hidden");
+        document.getElementById("show-" + topicId + "-AnswerBtn").classList.add("hidden");
+        
+        if (window.MathJax) MathJax.typesetPromise([answerDiv]);
     }
+
 </script>
 </body>
 </html>
