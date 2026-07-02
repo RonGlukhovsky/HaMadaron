@@ -1266,10 +1266,19 @@
                 <button onclick="analyzeEquation()" class="w-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded shadow transition-colors flex justify-center items-center gap-2">
                     <span>נתח וסווג משוואה</span><span>✨</span>
                 </button>
-                <div id="aiAnalysisResult" class="mt-6 hidden">
-                    <div id="aiLoading1" class="flex justify-center items-center space-x-2 space-x-reverse text-emerald-600 dark:text-emerald-400 mb-4 hidden"><span>מפענח את המשוואה...</span></div>
+                                <div id="aiAnalysisResult" class="mt-6 hidden">
+                    <div id="aiLoading1" class="flex justify-center items-center space-x-2 space-x-reverse text-emerald-600 dark:text-emerald-400 mb-4 hidden">
+                        <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <span>מפענח את המשוואה...</span>
+                    </div>
                     <div id="aiAnalysisContent" class="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-600 text-sm leading-relaxed whitespace-pre-wrap text-slate-800 dark:text-slate-200"></div>
+                    
+                    <div class="text-center mt-4">
+                        <button id="showAiSolutionBtn" onclick="showEquationSolution()" class="hidden text-sm text-emerald-600 dark:text-emerald-400 underline font-bold hover:text-emerald-800 dark:hover:text-emerald-200">הראה פתרון מלא</button>
+                    </div>
+                    <div id="aiFullSolutionContent" class="mt-4 bg-emerald-50 dark:bg-emerald-900/30 p-4 rounded border border-emerald-200 dark:border-emerald-800 text-sm leading-relaxed whitespace-pre-wrap hidden text-slate-800 dark:text-slate-200"></div>
                 </div>
+
             </div>
             <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6 border border-blue-200 dark:border-blue-800 border-t-4 transition-colors">
                 <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-4">אימון למבחן (חידון אקראי)</h3>
@@ -1661,31 +1670,58 @@ async function callGeminiAPI(userPrompt, systemPrompt, isJson = false) {
 }
 
 
+        let currentEquationSolution = "";
+
     async function analyzeEquation() {
-        if(!getStoredApiKey()) { alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); return; }
+        if(!getStoredApiKey()) { 
+            alert("יש להזין מפתח API בלשונית 'מבוא ומושגים'."); 
+            return; 
+        }
         const inputEl = document.getElementById('aiEqInput');
         if(!inputEl || !inputEl.value.trim()) return;
+        
         document.getElementById('aiAnalysisResult').classList.remove('hidden');
         document.getElementById('aiLoading1').classList.remove('hidden');
         document.getElementById('aiAnalysisContent').innerHTML = '';
+        document.getElementById('aiFullSolutionContent').classList.add('hidden');
+        document.getElementById('showAiSolutionBtn').classList.add('hidden');
 
-        const sysPrompt = `אתה מתרגל מומחה בקורס מד"ר 104136 בטכניון. זהה את המשוואה, הסבר את הסד"פ, וספק צעד ראשון לפתרון, ללא הפתרון המלא. כתוב בעברית ברורה ועטוף נוסחאות ב-$.`;
+        const sysPrompt = "אתה מתרגל מומחה בקורס מד\"ר 104136 בטכניון. זהה את המשוואה שהוזנה, הסבר את הסד\"פ וספק צעד ראשון לפתרון כרמז. בנוסף, ספק את הפתרון המלא. החזר אך ורק אובייקט JSON חוקי בפורמט בדיוק: {\"hint\": \"זיהוי המשוואה, סד\"פ ורמז צעד ראשון\", \"solution\": \"הפתרון המלא שלב אחר שלב\"} ללא שום מילה נוספת.";
         
         try {
-            const responseText = await callGeminiAPI(`נתח: ${inputEl.value.trim()}`, sysPrompt, false);
+            const rawResponse = await callGeminiAPI("נתח: " + inputEl.value.trim(), sysPrompt, true);
             document.getElementById('aiLoading1').classList.add('hidden');
-            // פילטר שמחליף את סימני המרקדאון בתגיות HTML מעוצבות
-const formattedText = responseText
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // הופך שתי כוכביות לטקסט מודגש
-    .replace(/### (.*)/g, '<strong class="text-lg block mt-2 mb-1 text-emerald-700 dark:text-emerald-400">$1</strong>') // כותרות קטנות
-    .replace(/## (.*)/g, '<strong class="text-xl block mt-2 mb-1 text-emerald-800 dark:text-emerald-300">$1</strong>') // כותרות גדולות
-    .replace(/\*(.*?)\*/g, '<em>$1</em>'); // הופך כוכבית אחת לטקסט נטוי
+            
+            let cleanText = rawResponse.replace(/```json/g, "").replace(/```/g, "").trim();
+            const eqData = JSON.parse(cleanText);
+            
+            const formatText = (text) => text
+                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                .replace(/### (.*)/g, "<strong class=\"text-lg block mt-2 mb-1 text-emerald-700 dark:text-emerald-400\">$1</strong>")
+                .replace(/## (.*)/g, "<strong class=\"text-xl block mt-2 mb-1 text-emerald-800 dark:text-emerald-300\">$1</strong>")
+                .replace(/\*(.*?)\*/g, "<em>$1</em>");
 
-document.getElementById('aiAnalysisContent').innerHTML = formattedText;
+            document.getElementById('aiAnalysisContent').innerHTML = formatText(eqData.hint);
+            currentEquationSolution = formatText(eqData.solution);
+            
+            document.getElementById('showAiSolutionBtn').classList.remove('hidden');
 
             if (window.MathJax) MathJax.typesetPromise([document.getElementById('aiAnalysisContent')]);
-        } catch(e) { document.getElementById('aiLoading1').classList.add('hidden'); }
+        } catch(e) { 
+            document.getElementById('aiLoading1').classList.add('hidden');
+            console.error("Analysis Error:", e);
+        }
     }
+
+    function showEquationSolution() {
+        const solutionDiv = document.getElementById('aiFullSolutionContent');
+        solutionDiv.innerHTML = currentEquationSolution;
+        solutionDiv.classList.remove('hidden');
+        document.getElementById('showAiSolutionBtn').classList.add('hidden');
+        
+        if (window.MathJax) MathJax.typesetPromise([solutionDiv]);
+    }
+
 
     let currentQuizAnswer = "";
     async function generateQuiz() {
